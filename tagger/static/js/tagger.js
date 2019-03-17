@@ -8,10 +8,6 @@ $(document).ready(function() {
         console.log('You clicked the button')
     });
 
-    // Close popup
-    $(".close, .popup-overlay").on("click", function(){
-        $(".popup-overlay, .popup-content").removeClass("active");
-      });
 
     // Highlight when conversation clicked
     $(".messages").mousedown(function (e1) {
@@ -117,6 +113,7 @@ $(document).ready(function() {
         $('input[id="ner"]').val(turn_id);
 
         if (selectedText.length > 0){
+            $(".popup-overlay, .popup-content").removeClass("active");
             selectedTextList.push(turn_id + ':' + selectedText)
             console.log('selectedTextList = ' + selectedTextList)
             $(".popup-overlay, .popup-content").addClass("active")

@@ -1,6 +1,10 @@
 from django.urls import path
-from . import views
+from django.conf.urls import url
+from tagger import views
 
 urlpatterns = [
-    path('', views.show_tagger, name = 'tagging_page'),
+    url(r'^conv_tag/', views.show_tagger, name = 'conv_tag'),
+    url(r'^dashboard/', views.show_tagger, name = 'dashboard'),
+    url(r'^register/$', views.register, name = 'register'),
+    url(r'^user_login/$', views.user_login, name = 'user_login'),
 ]
