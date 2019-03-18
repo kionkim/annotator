@@ -78,10 +78,17 @@ def user_login(request):
 
 @login_required
 def show_tagger(request):
-    conv = Conv.objects.filter(conv_id=355)
+    conv = Conv.objects.filter(conv_id = 355 )
     conv_json = serializers.serialize('json', conv)
-    print('conv_json = {}'.format(conv_json[0]) )
-    return render(request, 'tagger/tagging_page.html', {'conv': conv, 'conv_json': conv_json})
+    act = ['inform', 'ack', 'introduce', 'notify_success', \
+           'request', 'confirm', 'affirm', 'thank', 'bye', 'offer' ]
+    intent = ['선물', '리필']
+    slot = ['service_type', 'coupon', 'data', 'calling', 'date', 'subscription']
+    print('conv_json = {}'.format(conv_json.encode('utf8')) )
+    # Need to turn conv in json format
+    return render(request, 'tagger/tagging_page.html', \
+                  {'conv': conv, 'conv_json': conv_json, \
+                   'act': act, 'slot': slot, 'intent': intent})
 
 
 def load_excel(file = '~/Downloads/190112_chat.xlsx'):
