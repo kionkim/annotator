@@ -78,17 +78,16 @@ def user_login(request):
 
 @login_required
 def show_tagger(request):
-    conv = Conv.objects.filter(conv_id = 355 )
-    conv_json = serializers.serialize('json', conv)
+    with open('tagger/static/data/conv.json', 'r') as f:
+        conv =  f.read()
+    #print(conv)
     act = ['inform', 'ack', 'introduce', 'notify_success', \
            'request', 'confirm', 'affirm', 'thank', 'bye', 'offer' ]
     intent = ['선물', '리필']
     slot = ['service_type', 'coupon', 'data', 'calling', 'date', 'subscription']
-    print('conv_json = {}'.format(conv_json.encode('utf8')) )
     # Need to turn conv in json format
     return render(request, 'tagger/tagging_page.html', \
-                  {'conv': conv, 'conv_json': conv_json, \
-                   'act': act, 'slot': slot, 'intent': intent})
+                  {'conv': conv, 'act': act, 'slot': slot, 'intent': intent})
 
 
 def load_excel_to_sqlite(file = '~/Downloads/190112_chat.xlsx'):
@@ -106,7 +105,7 @@ def load_excel_to_sqlite(file = '~/Downloads/190112_chat.xlsx'):
     df1 = df[['번호', '카테고리', '내용', '접수일자']]
     cnt = 0
     # Conv._meta.local_fields 
-    for i in range(df1.shape[0]):
+    for i in range(100):
         tmp_df =  df1.iloc[i]
         conv_id = tmp_df['번호']
         conv_cat = tmp_df['카테고리']
@@ -131,20 +130,20 @@ def load_excel_to_sqlite(file = '~/Downloads/190112_chat.xlsx'):
 def load_excel_json(file = '~/Downloads/190112_chat.xlsx'):
     #'~/Downloads/twd_chat.xlsx'
     import pandas as pd
-
+    import os, json
     #import sqlite3
     #conn = create_connection('/Users/kion.kim/work/annot/db.sqlite3')
     #cur = conn.cursor()
     xl  = pd.ExcelFile(file)
     df = xl.parse('sheet1')
-    
-    df.columns = list(df.iloc[0]) # First row is blank. so set the second row as column name
-    df = df[1:]
+    # Working on my mac, First row is blank. so set the second row as column name
+    #df.columns = list(df.iloc[0]) 
+    #df = df[1:]
     df1 = df[['번호', '카테고리', '내용', '접수일자']]
-    cnt = 0
-    json = []
+    results = []
+    num_conv = df1.shape[0]
     # Conv._meta.local_fields 
-    for i in range(df1.shape[0]):
+    for i in range(10):
         tmp_df =  df1.iloc[i]
         conv_id = tmp_df['번호']
         conv_cat = tmp_df['카테고리']
@@ -153,26 +152,22 @@ def load_excel_json(file = '~/Downloads/190112_chat.xlsx'):
         sen_json = []
         for j in range(len(conv)):
             speaker = conv[j][0]
-            text = conv[j][1]
-            created_date = conv[j][2]
-            
-            sen_json.append("""{{\"text\":{}, \"speaker\": {}, \"domain\": null, \"intent\": null, \"dialogActs\": []}}""".format(text, speaker))
-        
-        
-       json.append("""\"count": 1, "next": null, "previous": null,
-   }
-]
-            Conv.objects.create(id = cnt, \
-                            conv_id = conv_id, \
-                            turn_id = j, \
-                            conv_cat = conv_cat, \
-                            speaker = speaker, \
-                            text = text, \
-                            intent = None, \
-                            ner = None, \
-                            created_date = created_date)
-            cnt += 1  
+            text = conv[j][1].replace('\'', '*').replace('"', '*').replace('\\', '=')
+            #created_date = conv[j][2]
+            txt = """{{"text": "{}", "speaker": "{}", "domain": null, "intent": null, "dialogActs": []}}""".format(text, speaker)
+            #print(txt)
+            sen_json.append(json.loads(txt))
+            print(sen_json)
+        _res = """{{"name": "{}", "cat": "{}", "sentences": {} }}""".format("TTXX_" + str(conv_id), conv_cat, sen_json)
+        #print(_res)
+        results.append(_res)
+    with open(os.path.join(os.curdir, "tagger/static/data/conv.json"), 'w') as f:
+        txt = """{{ "count": "{}", "next": null, "previous": null, "results": {} }}""".format(num_conv, results)
+        txt = txt.replace('["{', '[{]').replace('}", "{', '}, {').replace("'", '"')
+        print(txt)
+        f.write(txt)
     return None
+
 
 def create_connection(db_file):
     """ create a database connection to the SQLite database

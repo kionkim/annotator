@@ -1,21 +1,14 @@
 {% extends "tagger/base.html" %}
 
-<!--
-{% load static %}
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
--->
-
 {% block body_block %}
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="../../static/js/tagger.js"></script>
+<script type="text/javascript">
+    var conv = '{{ conv }}'
+    var act = '{{ act }}'
+    var intent = '{{ intent }}'
+    var slot = '{{ slot }}'
+  </script>
+  
 <!------ Include the above in your HEAD tag ---------->
 <div class="container-fluid">
     <div class="row">
@@ -24,50 +17,12 @@
                 <div class="panel panel-primary">
                     <div class="panel-heading top-bar">
                         <div class="col-md-8">
-                            <h3 class="panel-title"><span class="glyphicon glyphicon-comment"></span> Chat - {{ conv.0.conv_id }}</h3>
+                            <h3 class="panel-title chat_head"></h3>
                         </div>
                     </div>
                     <div class="panel-body msg_container_base">
-                        {% for c in conv %}
-                        {% ifequal c.speaker '고객' %}
-                        <div class="row msg_container base_sent">
-                            <div class="col-md-10">
-                                <div class="messages msg_sent" id = "msg_{{ c.turn_id }}">
-                                    <p>{{ c.text }}</p>
-                                    <time datetime="{{ c.created_date }}">{{ c.created_date }}</time>
-                                </div>
-                            </div>
-                            <div class="col-md-2 avatar">
-                                <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
-                            </div>
-                        </div>
-                        {% else %}
-                        <div class="row msg_container base_receive">
-                            <div class="col-md-2 avatar">
-                                <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
-                            </div>
-                            <div class="col-md-10">
-                                <div class="messages msg_receive"  id = "msg_{{ c.turn_id }}">
-                                    <div class="col-md-2">
-                                            <input id="a" class="imgclick" style="outline: none;" type="image" src="../../static/images/plus.png" width="30px" height="30px" border="0" >
-                                    </div>
-                                    <div>
-                                        <p>{{ c.text}}</p>
-                                        <time datetime="{{ c.created_date }}">{{ c.created_date }}</time>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {% endifequal %}
-                        {% endfor %}
                     </div>
                     <div class="panel-footer">
-                        <div class="input-group">
-                            <input id="btn-input" type="text" class="form-control input-sm chat_input" placeholder="Write your message here..." />
-                                <span class="input-group-btn">
-                                    <button class="btn btn-primary btn-sm" id="btn-chat"><i class="fa fa-send fa-1x" aria-hidden="true"></i></button>
-                                </span>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -127,4 +82,6 @@
         </div>
     </div>
 </div>
+
+
 {% endblock %}

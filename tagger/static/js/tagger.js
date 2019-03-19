@@ -1,18 +1,16 @@
 $(document).ready(function() {
-    //console.log(conv)
+    
     conv = conv.replace(/&quot;/g, '"')
                .replace(/&gt;/g, '>')
                .replace(/&#39;/g, '\'')
-
-    console.log(conv)
-    conv = $.parseJSON(conv)
-    console.log('conv_json =' + JSON.stringify(conv[0]))
-    act = JSON.parse(act.replace(/&#39;/g, '"'))
-    intent = JSON.parse(intent.replace(/&#39;/g, '"'))
-    slot = JSON.parse(slot.replace(/&#39;/g, '"'))
+    var conv = JSON.parse(conv)
+    var act = JSON.parse(act.replace(/&#39;/g, '"'))
+    var intent = JSON.parse(intent.replace(/&#39;/g, '"'))
+    var slot = JSON.parse(slot.replace(/&#39;/g, '"'))
     console.log('act =' + act.length);
     console.log('intent =' + intent.length);
     
+
     // Set menu for act
     var elements = []
     for (x = 0; x < act.length; x ++){
@@ -45,16 +43,20 @@ $(document).ready(function() {
     }
     $('#conv_intent').append(elements);
 
+    var conv_to_show = 'TTXX_355'
+    $('<span class="glyphicon glyphicon-comment"></span> Chat - ' + conv['results'][0]['name']).appendTo('.chat_header')
+    generateChatBody(conv['results'][0], '.panel-body msg_container_base')
+
     var turn_id = '0';
     var selectedTextList = [];
 
-    // JQuery code to be added in here.
+
     $("#btn-chat").click( function(event) {
         alert("You clicked the button using JQuery!");
         console.log('You clicked the button')
     });
 
-
+    // Hightlight script: https://jsfiddle.net/Bilalchk123/1o4j0w2v/
     // Highlight when conversation clicked
     $(".messages").mousedown(function (e1) {
         mouseXPosition = e1.pageX;//register the mouse down position
@@ -215,6 +217,43 @@ function renderConv_info(conv_id, turn_id){
    });
 }
 
+// Generate chat-body
+function generateChatBody(conv, container) {
+  conv_length = conv['sentences'].length
+  text = conv['sentences'][i]['text']
+  speaker = conv['sentences'][i]['speaker']
+  for (var i = 0; i < conv_length; i++) {
+      if (speaker === '고객') {
+        console.log("a" + speaker + ":" + text)
+        sent_body = generateSentBody(text)
+        sent_body.appendTo(container) 
+      } else {
+        console.log("b" + speaker + ":" + text)
+        received_body = generateReceivedBody(text)
+        received_body.appendTo(container) 
+      }
+  }
+}
+
+function generateSentBody(turn, text){
+    body = '<div class="row msg_container base_sent">'
+    body += '<div class="col-md-10"><div class="messages msg_sent" id = "turn_' + turn + '">'
+    body += '<p>' + text + '</p></div>'
+    body += '<div class="col-md-2 avatar"><img src="../../static/images/plus.png" class=" img-responsive "></div>'
+    body += '</div>'
+    return body
+}
+
+function generateReceivedBody(turn, text){
+    body = '<div class="row msg_container base_receive">'
+    body += '<div class="col-md-2 avatar"><img src="../../static/images/plus.png" class=" img-responsive "></div>'
+    body += '<div class="col-md-10"><div class="messages msg_receive" id = "turn_' + turn + '">'
+    body += '<div class="col-md-2"><input id="a" class="imgclick" style="outline: none;" type="image" src="../../static/images/plus.png" width="20px" height="20px" border="0"'
+    body += '<div><p>' + text + '</p></div>'
+    body += '</div>'
+    return body
+}
+                
 
 // Image button action
 $(".imgclick").mousedown(function(){

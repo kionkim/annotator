@@ -17,7 +17,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 -->
 
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -49,13 +48,7 @@
     {% endblock %}
     </div>
             <!--Hightlight script: https://jsfiddle.net/Bilalchk123/1o4j0w2v/-->
-            <script type="text/javascript">
-              var conv = '{{ conv_json }}'
-              var act = '{{ act }}'
-              var intent = '{{ intent }}'
-              var slot = '{{ slot }}'
-          </script>
-          <script src="{% static 'js/tagger.js' %}"></script>
+           
           <script>
                   $(".messages").mousedown(function () {
                     console.log( $(this).val() );
