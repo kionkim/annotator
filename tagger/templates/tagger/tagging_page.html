@@ -1,3 +1,6 @@
+{% extends "tagger/base.html" %}
+
+<!--
 {% load static %}
 <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -9,154 +12,119 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
+-->
 
-
+{% block body_block %}
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <!------ Include the above in your HEAD tag ---------->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="chatbody">
+                <div class="panel panel-primary">
+                    <div class="panel-heading top-bar">
+                        <div class="col-md-8">
+                            <h3 class="panel-title"><span class="glyphicon glyphicon-comment"></span> Chat - {{ conv.0.conv_id }}</h3>
+                        </div>
+                    </div>
+                    <div class="panel-body msg_container_base">
+                        {% for c in conv %}
+                        {% ifequal c.speaker '고객' %}
+                        <div class="row msg_container base_sent">
+                            <div class="col-md-10">
+                                <div class="messages msg_sent" id = "msg_{{ c.turn_id }}">
+                                    <p>{{ c.text }}</p>
+                                    <time datetime="{{ c.created_date }}">{{ c.created_date }}</time>
+                                </div>
+                            </div>
+                            <div class="col-md-2 avatar">
+                                <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="row msg_container base_receive">
+                            <div class="col-md-2 avatar">
+                                <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
+                            </div>
+                            <div class="col-md-10">
+                                <div class="messages msg_receive"  id = "msg_{{ c.turn_id }}">
+                                    <div class="col-md-2">
+                                            <input id="a" class="imgclick" style="outline: none;" type="image" src="../../static/images/plus.png" width="30px" height="30px" border="0" >
+                                    </div>
+                                    <div>
+                                        <p>{{ c.text}}</p>
+                                        <time datetime="{{ c.created_date }}">{{ c.created_date }}</time>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endifequal %}
+                        {% endfor %}
+                    </div>
+                    <div class="panel-footer">
+                        <div class="input-group">
+                            <input id="btn-input" type="text" class="form-control input-sm chat_input" placeholder="Write your message here..." />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary btn-sm" id="btn-chat"><i class="fa fa-send fa-1x" aria-hidden="true"></i></button>
+                                </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<html>
-    <head>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="{% static 'css/tagger.css' %}">
-    </head>
-    
-    <body>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-4">
-                    <div class="chatbody">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading top-bar">
-                                <div class="col-md-8 col-xs-8">
-                                    <h3 class="panel-title"><span class="glyphicon glyphicon-comment"></span> Chat - {{ conv.0.conv_id }}</h3>
-                                </div>
-                            </div>
-                            <div class="panel-body msg_container_base">
-                                {% for c in conv %}
-                                {% ifequal c.speaker '고객' %}
-                                <div class="row msg_container base_sent">
-                                    <div class="col-md-10 col-xs-10">
-                                        <div class="messages msg_sent" id = "msg_{{ c.turn_id }}">
-                                            <p>{{ c.text }}</p>
-                                            <time datetime="{{ c.created_date }}">{{ c.created_date }}</time>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2 col-xs-2 avatar">
-                                        <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
-                                    </div>
-                                </div>
-                                {% else %}
-                                <div class="row msg_container base_receive">
-                                    <div class="col-md-2 col-xs-2 avatar">
-                                        <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
-                                    </div>
-                                    <div class="col-md-10 col-xs-10">
-                                        <div class="messages msg_receive"  id = "msg_{{ c.turn_id }}">
-                                            <p>{{ c.text}}</p>
-                                            <time datetime="{{ c.created_date }}">{{ c.created_date }}</time>
-                                        </div>
-                                    </div>
-                                </div>
-                                {% endifequal %}
-                                {% endfor %}
-                            </div>
-                            <div class="panel-footer">
-                                <div class="input-group">
-                                    <input id="btn-input" type="text" class="form-control input-sm chat_input" placeholder="Write your message here..." />
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-primary btn-sm" id="btn-chat"><i class="fa fa-send fa-1x" aria-hidden="true"></i></button>
-                                        </span>
-                                </div>
-                            </div>
-                        </div>
+        <div class="col-md-8">
+            <div class="panel panel-primary">
+                <div class="panel-heading top-bar">
+                    <div class="col-md-8">
+                        <h3 class="panel-title"><span class="glyphicon glyphicon-book"></span> Tagging info</h3>
                     </div>
                 </div>
-    
-                <div class="col-sm-8">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading top-bar">
-                            <div class="col-md-8 col-xs-8">
-                                <h3 class="panel-title"><span class="glyphicon glyphicon-book"></span> Tagging info</h3>
-                            </div>
+                <div>
+                    <form>
+                        <div class="form-group">
+                            <label for="turn_id">Turn ID</label>
+                            <input class="form-control" id="turn_id"></input>
                         </div>
-                        <div>
-                            <form>
-                                <div class="form-group">
-                                    <label for="turn_id">Turn ID</label>
-                                    <input id="turn_id"></input>
-                                </div>
-                                <div class="form-group">
-                                    <label for="conv_intent">대화 Intent</label>
-                                    <input id="conv_intent"></input>
-                                </div>
-                                <div class="form-group">
-                                    <label for="sentence_intent">문장 Intent</label>
-                                    <input id="sentence_intent"></input>
-                                </div>
-                                <div class="form-group">
-                                    <label for="ner">NER</label>
-                                    <input id="ner"></input>
-                                </div>
-                                <button type="submit" class="btn btn-primary">저장</button>
-                            </form>
+                        <div class="form-group">
+                            <label for="conv_intent">대화 Intent</label>
+                            <select class="form-control" id="conv_intent"></select>
                         </div>
-                        <div>
-                                <form>
-                                        <div class="form-group">
-                                          <label for="exampleFormControlInput1">Email address</label>
-                                          <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
-                                        </div>
-                                        <div class="form-group">
-                                          <label for="exampleFormControlSelect1">Example select</label>
-                                          <select class="form-control" id="exampleFormControlSelect1">
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                            <option>4</option>
-                                            <option>5</option>
-                                          </select>
-                                        </div>
-                                        <div class="form-group">
-                                          <label for="exampleFormControlSelect2">Example multiple select</label>
-                                          <select multiple class="form-control" id="exampleFormControlSelect2">
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                            <option>4</option>
-                                            <option>5</option>
-                                          </select>
-                                        </div>
-                                        <div class="form-group">
-                                          <label for="exampleFormControlTextarea1">Example textarea</label>
-                                          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                                        </div>
-                                      </form>
+                        <div class="form-group"> 
+                            <label for="intent">문장 Intent</label>
+                            <select class="form-control" id="sentence_intent"></select>
+                        </div> 
+                        <div class="form-group">
+                            <label for="act">Act</label>
+                            <select class="form-control" id="act"></select>
                         </div>
-                    </div>
-                </div>
-                <div class="popup-overlay">
-                    <!--Creates the popup content-->
-                    <div class="popup-content">
+                        <div class="form-group">
+                            <label for="slots">Slots</label>
+                            <input class="form-group" id="total_slots"></input>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">저장</button>
+                        </div>
                         
-                        <p> This is an example pop-up that you can make using jQuery.</p>
-                        <!--popup's close button-->
-                        <button class="close">Close</button>
-                    </div>
+                    </form>
                 </div>
-        <!--Hightlight script: https://jsfiddle.net/Bilalchk123/1o4j0w2v/-->
-        <script type="text/javascript">
-            var conv = '{{ conv_json }}'
-            console.log(conv.replace('&quot;', '"'))
-            var conv_json = JSON.parse(conv.replace('&quot;', '"'))
-        </script>
-        <script src="{% static 'js/tagger.js' %}"></script>
-        <script>
-                $(".messages").mousedown(function () {
-                  console.log( $(this).val() );
-                });
-            </script>
-
-
-
-    </body>
-    
-</html>
+            </div>
+        </div>
+    </div>
+    <div class="popup-overlay">
+        <!--Creates the popup content-->
+        <div class="popup-content">
+            <form>
+                <div>
+                    <label class="form-group"  for="slot">Slot</label>
+                    <select class="form-group" id="slot"></select>
+                </div>
+                <div>
+                    <label class="form-group" for="value">Value</label><input id='value'></input>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

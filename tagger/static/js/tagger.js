@@ -1,17 +1,59 @@
 $(document).ready(function() {
-    console.log('conv_json =' + conv)
-    var turn_id = '0'
-    var selectedTextList = []
+    //console.log(conv)
+    conv = conv.replace(/&quot;/g, '"')
+               .replace(/&gt;/g, '>')
+               .replace(/&#39;/g, '\'')
+
+    console.log(conv)
+    conv = $.parseJSON(conv)
+    console.log('conv_json =' + JSON.stringify(conv[0]))
+    act = JSON.parse(act.replace(/&#39;/g, '"'))
+    intent = JSON.parse(intent.replace(/&#39;/g, '"'))
+    slot = JSON.parse(slot.replace(/&#39;/g, '"'))
+    console.log('act =' + act.length);
+    console.log('intent =' + intent.length);
+    
+    // Set menu for act
+    var elements = []
+    for (x = 0; x < act.length; x ++){
+        var element = $('<option>' + act[x] + '</option>');
+        elements.push(element)
+    }
+    $('#act').append(elements);
+    
+    // Set menu for slot
+    var elements = []
+    for (x = 0; x < slot.length; x ++){
+        var element = $('<option>' + slot[x] + '</option>');
+        elements.push(element)
+    }
+    $('#slot').append(elements);
+
+    // Set menu for sentence intent
+    var elements = []
+    for (x = 0; x < intent.length; x ++){
+        var element = $('<option>' + intent[x] + '</option>');
+        elements.push(element)
+    }
+    $('#sentence_intent').append(elements);
+
+    // Set menu for conv intent
+    var elements = []
+    for (x = 0; x < intent.length; x ++){
+        var element = $('<option>' + intent[x] + '</option>');
+        elements.push(element)
+    }
+    $('#conv_intent').append(elements);
+
+    var turn_id = '0';
+    var selectedTextList = [];
+
     // JQuery code to be added in here.
     $("#btn-chat").click( function(event) {
         alert("You clicked the button using JQuery!");
         console.log('You clicked the button')
     });
 
-    // Close popup
-    $(".close, .popup-overlay").on("click", function(){
-        $(".popup-overlay, .popup-content").removeClass("active");
-      });
 
     // Highlight when conversation clicked
     $(".messages").mousedown(function (e1) {
@@ -117,6 +159,7 @@ $(document).ready(function() {
         $('input[id="ner"]').val(turn_id);
 
         if (selectedText.length > 0){
+            $(".popup-overlay, .popup-content").removeClass("active");
             selectedTextList.push(turn_id + ':' + selectedText)
             console.log('selectedTextList = ' + selectedTextList)
             $(".popup-overlay, .popup-content").addClass("active")
@@ -124,6 +167,7 @@ $(document).ready(function() {
                 left: Math.min(mouseXPosition, $(window).innerWidth()-$('.popup-content').outerWidth()),
                 top: mouseYPosition + 20
             });
+            $('#value').val(selectedText);
         }
         
     });
@@ -170,3 +214,19 @@ function renderConv_info(conv_id, turn_id){
         
    });
 }
+
+
+// Image button action
+$(".imgclick").mousedown(function(){
+    var mrgtb = parseInt($(this).css("margin-top"));
+    var mrglf = parseInt($(this).css("margin-left"));
+    mrgtb=mrgtb+3;
+    mrglf=mrglf+3;
+        $(this).css("margin-top",mrgtb+"px").css("margin-left",mrglf+"px");
+}).mouseup(function(){
+    var mrgtb = parseInt($(this).css("margin-top"));
+    var mrglf = parseInt($(this).css("margin-left"));
+    mrgtb=mrgtb-3;
+    mrglf=mrglf-3;
+        $(this).css("margin-top",mrgtb+"px").css("margin-left",mrglf+"px");
+}); 
