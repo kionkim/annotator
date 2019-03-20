@@ -3,10 +3,10 @@ $(document).ready(function() {
     conv = conv.replace(/&quot;/g, '"')
                .replace(/&gt;/g, '>')
                .replace(/&#39;/g, '\'')
-    var conv = JSON.parse(conv)
-    var act = JSON.parse(act.replace(/&#39;/g, '"'))
-    var intent = JSON.parse(intent.replace(/&#39;/g, '"'))
-    var slot = JSON.parse(slot.replace(/&#39;/g, '"'))
+    conv = JSON.parse(conv)
+    act = JSON.parse(act.replace(/&#39;/g, '"'))
+    intent = JSON.parse(intent.replace(/&#39;/g, '"'))
+    slot = JSON.parse(slot.replace(/&#39;/g, '"'))
     console.log('act =' + act.length);
     console.log('intent =' + intent.length);
     
@@ -45,7 +45,7 @@ $(document).ready(function() {
 
     var conv_to_show = 'TTXX_355'
     $('<span class="glyphicon glyphicon-comment"></span> Chat - ' + conv['results'][0]['name']).appendTo('.chat_header')
-    generateChatBody(conv['results'][0], '.panel-body msg_container_base')
+    generateChatBody(conv['results'][0], '.msg_container_base')
 
     var turn_id = '0';
     var selectedTextList = [];
@@ -220,17 +220,18 @@ function renderConv_info(conv_id, turn_id){
 // Generate chat-body
 function generateChatBody(conv, container) {
   conv_length = conv['sentences'].length
-  text = conv['sentences'][i]['text']
-  speaker = conv['sentences'][i]['speaker']
+  
   for (var i = 0; i < conv_length; i++) {
+      text = conv['sentences'][i]['text']
+      speaker = conv['sentences'][i]['speaker']
       if (speaker === '고객') {
         console.log("a" + speaker + ":" + text)
         sent_body = generateSentBody(text)
-        sent_body.appendTo(container) 
+        $(sent_body).appendTo(container) 
       } else {
         console.log("b" + speaker + ":" + text)
         received_body = generateReceivedBody(text)
-        received_body.appendTo(container) 
+        $(received_body).appendTo(container) 
       }
   }
 }

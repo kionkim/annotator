@@ -58,6 +58,18 @@ def register(request):
                            'registered':registered})
 
 
+def show_dashboard(request):
+    with open('tagger/static/data/conv.json', 'r') as f:
+        conv =  f.read()
+    #print(conv)
+    act = ['inform', 'ack', 'introduce', 'notify_success', \
+           'request', 'confirm', 'affirm', 'thank', 'bye', 'offer' ]
+    intent = ['선물', '리필']
+    slot = ['service_type', 'coupon', 'data', 'calling', 'date', 'subscription']
+    # Need to turn conv in json format
+    return render(request, 'tagger/dashboard.html', \
+                  {'conv': conv, 'act': act, 'slot': slot, 'intent': intent})
+
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -74,7 +86,7 @@ def user_login(request):
             print("They used username: {} and password: {}".format(username,password))
             return HttpResponse("Invalid login details given")
     else:
-        return render(request, 'tagger/login.html', {})
+        return render(request, 'tagger/login.html')
 
 @login_required
 def show_tagger(request):
