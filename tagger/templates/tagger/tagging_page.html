@@ -1,14 +1,14 @@
 {% extends "tagger/base.html" %}
 
 {% block body_block %}
-<script src="../../static/js/tagger.js"></script>
+
 <script type="text/javascript">
     var conv = '{{ conv }}'
     var act = '{{ act }}'
     var intent = '{{ intent }}'
     var slot = '{{ slot }}'
   </script>
-  
+<script src="../../static/js/tagger.js"></script>  
 <!------ Include the above in your HEAD tag ---------->
 <div class="container-fluid">
     <div class="row">
@@ -70,14 +70,18 @@
         <!--Creates the popup content-->
         <div class="popup-content">
             <form>
-                <div>
-                    <label class="form-group"  for="slot">Slot</label>
-                    <select class="form-group" id="slot"></select>
+                <div class="form-group ">
+                    <label for="slot">Slot</label>
                 </div>
-                <div>
-                    <label class="form-group" for="value">Value</label><input id='value'></input>
+                <div class="form-group" >
+                    <select id="slot"></select>
                 </div>
-                
+                <div class="form-group">
+                    <label for="value">Value</label>
+                </div>
+                <div class="form-group">
+                    <input id='value'></input>
+                </div>
             </form>
         </div>
     </div>

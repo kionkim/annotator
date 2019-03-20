@@ -149,6 +149,7 @@
     justify-content: flex-end;
     align-items: flex-end;
   }
+
   .base_sent > .avatar:after {
       content: "";
       position: absolute;
@@ -201,11 +202,22 @@
       font-size: 18px;
   }
 
-
-  /* High lighting */
+  /* High lighting
   .highlight
   {
       background-color: rgb(240, 115, 13);
+      border-radius: 5px 5px 5px 5px;
+  }
+ */
+  .highlight.entity
+  {
+      background-color: black;
+      color: white;
+      border-radius: 5px 0px 0px 5px;
+  }
+  .highlight.entity_name
+  {
+      background-color: BLUE;
       border-radius: 5px 5px 5px 5px;
   }
 
@@ -222,7 +234,7 @@
   }
  
   .selectedConv{
-    background-color: #AEAF93;
+    background-color: rgb(245,221, 173);
 }
 
 
@@ -231,15 +243,16 @@
     visibility:hidden;
     position:absolute;
     background:#ffffff;
-    border:1px solid #666666;
-    width:300px;
+    border:1px solid #666666; 
+    width:400px;
     height:200px;
-    left:25%; 
+    left:25%;
   }
   .popup-overlay.active{
     /*displays pop-up when "active" class is present*/
     visibility:visible;
-    text-align:center;
+    margin-top: 50px;
+    margin-left: 10px;
   }
   
   .popup-content {

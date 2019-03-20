@@ -84,7 +84,10 @@ def show_tagger(request):
     act = ['inform', 'ack', 'introduce', 'notify_success', \
            'request', 'confirm', 'affirm', 'thank', 'bye', 'offer' ]
     intent = ['선물', '리필']
-    slot = ['service_type', 'coupon', 'data', 'calling', 'date', 'subscription']
+    slot = [{'service_type': '(178, 212, 245)'}, {'coupon': '(252, 195, 167)'}, \
+            {'data': '(143, 208, 187)'}, {'calling': '(211, 189, 235)'}, \
+            {'date': '(154, 159, 249)'}, {'subscription': '(252, 202, 202)'}]
+    print(slot)
     # Need to turn conv in json format
     return render(request, 'tagger/tagging_page.html', \
                   {'conv': conv, 'act': act, 'slot': slot, 'intent': intent})

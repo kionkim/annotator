@@ -1,13 +1,15 @@
 $(document).ready(function() {
-    
     conv = conv.replace(/&quot;/g, '"')
                .replace(/&gt;/g, '>')
                .replace(/&#39;/g, '\'')
-    var conv = JSON.parse(conv)
-    var act = JSON.parse(act.replace(/&#39;/g, '"'))
-    var intent = JSON.parse(intent.replace(/&#39;/g, '"'))
-    var slot = JSON.parse(slot.replace(/&#39;/g, '"'))
-    console.log('act =' + act.length);
+    conv = JSON.parse(conv)
+    act = JSON.parse(act.replace(/&#39;/g, '"'))
+    intent = JSON.parse(intent.replace(/&#39;/g, '"'))
+    console.log(slot)
+    console.log(typeof(slot))
+    slot = JSON.parse(slot.replace(/&#39;/g, '"'))
+    console.log(typeof(slot))
+    console.log('slot =' + slot);
     console.log('intent =' + intent.length);
     
 
@@ -21,11 +23,15 @@ $(document).ready(function() {
     
     // Set menu for slot
     var elements = []
-    for (x = 0; x < slot.length; x ++){
-        var element = $('<option>' + slot[x] + '</option>');
-        elements.push(element)
-    }
+    $.each(slot, function(key){
+        value = Object.keys(slot[key])[0]
+        elements.push($('<option value = "' + value + '">' + value + '</option>'));
+    });
     $('#slot').append(elements);
+
+    var slot_on_work = $('#slot').find(':selected').text();
+
+    console.log('slot on work = ' + slot_on_work)
 
     // Set menu for sentence intent
     var elements = []
@@ -45,7 +51,8 @@ $(document).ready(function() {
 
     var conv_to_show = 'TTXX_355'
     $('<span class="glyphicon glyphicon-comment"></span> Chat - ' + conv['results'][0]['name']).appendTo('.chat_header')
-    generateChatBody(conv['results'][0], '.panel-body msg_container_base')
+    generateChatBody(conv['results'][0], '.msg_container_base')
+    
 
     var turn_id = '0';
     var selectedTextList = [];
@@ -70,6 +77,7 @@ $(document).ready(function() {
     // Highlight when text selected
     $(".messages").mouseup(function (e2) {
         console.log('mouseup triggered')
+        
         var highlighted = false;
         var selection = window.getSelection();
         var selectedText = selection.toString();
@@ -78,6 +86,7 @@ $(document).ready(function() {
         var anchorTag = selection.anchorNode.parentNode;
         var focusTag = selection.focusNode.parentNode;
         console.log('Selected text = ' + selectedText.length)
+        console.log('Selected text = ' + slot_on_work)
         if ((e2.pageX - mouseXPosition) < 0) {
             focusTag = selection.anchorNode.parentNode;
             anchorTag = selection.focusNode.parentNode;
@@ -86,7 +95,7 @@ $(document).ready(function() {
             highlighted = true;
 
             if (anchorTag.className !== "highlight") {
-                highlightSelection();
+                highlightSelection(slot_on_work);
             } else {
                 var afterText = selectedText + "<span class = 'highlight'>" + anchorTag.innerHTML.substr(endPoint) + "</span>";
                 anchorTag.innerHTML = anchorTag.innerHTML.substr(0, startPoint);
@@ -95,7 +104,7 @@ $(document).ready(function() {
 
         }else{
             if(anchorTag.className !== "highlight" && focusTag.className !== "highlight"){
-                highlightSelection();  
+                highlightSelection(slot_on_work);  
                 highlighted = true;
             }
             
@@ -140,7 +149,7 @@ $(document).ready(function() {
 
         }
         if (!highlighted) {
-            highlightSelection();
+            highlightSelection(slot_on_work);
         }
         $('.highlight').each(function(){
             if($(this).html() == ''){
@@ -176,7 +185,7 @@ $(document).ready(function() {
 });
 
 
-function highlightSelection() {
+function highlightSelection(slot) {
     var selection;
 
     //Get the selected stuff
@@ -191,11 +200,21 @@ function highlightSelection() {
     //If the range spans some text, and inside a tag, set its css class.
     if (range && !selection.isCollapsed) {
         if (selection.anchorNode.parentNode == selection.focusNode.parentNode) {
-            var span = document.createElement('span');
-            span.className = 'highlight';
-            span.textContent = selection.toString();
+            console.log('**** slot on work = '+ slot)
+            var span_entity_tag = document.createElement('span');
+            span_entity_tag.className = 'highlight entity';
+            span_entity_tag.id = slot;
+            span_entity_tag.textContent = slot  + ': ';
+            
+            var span_entity_value = document.createElement('span');
+            span_entity_value.className = 'highlight entity_' +slot;
+            $('.highlight.entity_' +slot).css({'color': 'BLUE'});
+            span_entity_value.id = slot;
+            span_entity_value.textContent = selection.toString();
             selection.deleteFromDocument();
-            range.insertNode(span);
+            range.insertNode(span_entity_value);
+            range.insertNode(span_entity_tag);
+            
 //                        range.surroundContents(span);
         }
     }
@@ -220,36 +239,34 @@ function renderConv_info(conv_id, turn_id){
 // Generate chat-body
 function generateChatBody(conv, container) {
   conv_length = conv['sentences'].length
-  text = conv['sentences'][i]['text']
-  speaker = conv['sentences'][i]['speaker']
+  
   for (var i = 0; i < conv_length; i++) {
+      text = conv['sentences'][i]['text']
+      speaker = conv['sentences'][i]['speaker']
       if (speaker === '고객') {
-        console.log("a" + speaker + ":" + text)
-        sent_body = generateSentBody(text)
-        sent_body.appendTo(container) 
+        sent_body = generateSentBody(i, text)
+        $(sent_body).appendTo(container) 
       } else {
-        console.log("b" + speaker + ":" + text)
-        received_body = generateReceivedBody(text)
-        received_body.appendTo(container) 
+        received_body = generateReceivedBody(i, text)
+        $(received_body).appendTo(container) 
       }
   }
 }
 
 function generateSentBody(turn, text){
     body = '<div class="row msg_container base_sent">'
-    body += '<div class="col-md-10"><div class="messages msg_sent" id = "turn_' + turn + '">'
-    body += '<p>' + text + '</p></div>'
-    body += '<div class="col-md-2 avatar"><img src="../../static/images/plus.png" class=" img-responsive "></div>'
+    body += '<div class="col-md-10"><div class="messages msg_sent" id = "turn_' + turn + '"><p>' + text + '</p></div>'
+    body += '</div>'
+    body += '<div class="col-md-2 avatar"><img src="../../static/images/avatar.png" class=" img-responsive "></div>'
     body += '</div>'
     return body
 }
 
 function generateReceivedBody(turn, text){
     body = '<div class="row msg_container base_receive">'
-    body += '<div class="col-md-2 avatar"><img src="../../static/images/plus.png" class=" img-responsive "></div>'
-    body += '<div class="col-md-10"><div class="messages msg_receive" id = "turn_' + turn + '">'
-    body += '<div class="col-md-2"><input id="a" class="imgclick" style="outline: none;" type="image" src="../../static/images/plus.png" width="20px" height="20px" border="0"'
-    body += '<div><p>' + text + '</p></div>'
+    body += '<div class="col-md-2 avatar"><img src="../../static/images/avatar.png" class=" img-responsive "></div>'
+    body += '<div class="col-md-10"><div class="messages msg_receive col-md-10" id = "turn_' + turn + '">' + '<p>' + text + '</p></div>'
+    body += '<div class="col-md-2"><input id="a" class="imgclick" style="outline: none;" type="image" src="../../static/images/plus.png" width="20px" height="20px" border="0"></div>'
     body += '</div>'
     return body
 }
