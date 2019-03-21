@@ -215,10 +215,11 @@
       color: white;
       border-radius: 5px 0px 0px 5px;
   }
-  .highlight.entity_name
+  .highlight.entity_value
   {
-      background-color: BLUE;
-      border-radius: 5px 5px 5px 5px;
+    background-color: black;
+    color: white;
+    border-radius: 0px 5px 5px 0px;
   }
 
   #test-text::-moz-selection { /* Code for Firefox */

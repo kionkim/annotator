@@ -5,6 +5,7 @@ $(document).ready(function() {
     conv = JSON.parse(conv)
     act = JSON.parse(act.replace(/&#39;/g, '"'))
     intent = JSON.parse(intent.replace(/&#39;/g, '"'))
+
     console.log(slot)
     console.log(typeof(slot))
     slot = JSON.parse(slot.replace(/&#39;/g, '"'))
@@ -24,8 +25,8 @@ $(document).ready(function() {
     // Set menu for slot
     var elements = []
     $.each(slot, function(key){
-        value = Object.keys(slot[key])[0]
-        elements.push($('<option value = "' + value + '">' + value + '</option>'));
+        value = Object.keys(slot[key])[0];
+        elements.push($('<option value = "' + slot[key][value] + '">' + value + '</option>'));
     });
     $('#slot').append(elements);
 
@@ -49,10 +50,16 @@ $(document).ready(function() {
     }
     $('#conv_intent').append(elements);
 
+    // Set css
+    $.each(slot, function(key){
+        value = Object.keys(slot[key])[0];
+        console.log(value + ':' + slot[key][value]);
+        $('.highlight.entity_name' +value).css({'background-color': slot[key][value], 'color': 'white', 'border-radius': '0px 5px 5px 0px'});
+    });
     var conv_to_show = 'TTXX_355'
     $('<span class="glyphicon glyphicon-comment"></span> Chat - ' + conv['results'][0]['name']).appendTo('.chat_header')
     generateChatBody(conv['results'][0], '.msg_container_base')
-    
+
 
     var turn_id = '0';
     var selectedTextList = [];
@@ -95,7 +102,7 @@ $(document).ready(function() {
             highlighted = true;
 
             if (anchorTag.className !== "highlight") {
-                highlightSelection(slot_on_work);
+                highlightSelection(turn_id, slot_on_work);
             } else {
                 var afterText = selectedText + "<span class = 'highlight'>" + anchorTag.innerHTML.substr(endPoint) + "</span>";
                 anchorTag.innerHTML = anchorTag.innerHTML.substr(0, startPoint);
@@ -104,7 +111,7 @@ $(document).ready(function() {
 
         }else{
             if(anchorTag.className !== "highlight" && focusTag.className !== "highlight"){
-                highlightSelection(slot_on_work);  
+                highlightSelection(turn_id, slot_on_work);  
                 highlighted = true;
             }
             
@@ -149,7 +156,7 @@ $(document).ready(function() {
 
         }
         if (!highlighted) {
-            highlightSelection(slot_on_work);
+            highlightSelection(turn_id, slot_on_work);
         }
         $('.highlight').each(function(){
             if($(this).html() == ''){
@@ -163,11 +170,11 @@ $(document).ready(function() {
         console.log('**** = ' + selectedText.length)
         // popup reference: https://www.pair.com/support/kb/how-to-use-jquery-to-generate-modal-pop-up-when-clicked/
         
-        //renderConv_info(turn_id)
-        $('input[id="turn_id"]').val(turn_id);
-        $('input[id="conv_intent"]').val(turn_id);
-        $('input[id="sentence_intent"]').val(turn_id);
-        $('input[id="ner"]').val(turn_id);
+        renderConv_info(turn_id)
+        //$('input[id="turn_id"]').val(turn_id);
+        //$('input[id="conv_intent"]').val(turn_id);
+        //$('input[id="sentence_intent"]').val(turn_id);
+        //$('input[id="ner"]').val(turn_id);
 
         if (selectedText.length > 0){
             $(".popup-overlay, .popup-content").removeClass("active");
@@ -182,10 +189,106 @@ $(document).ready(function() {
         }
         
     });
+    $("#slot").change(function (){
+        slot_color = $(this).val();
+        slot_text = $('#slot option:selected').text();
+        console.log('slot_color = ' + slot_color);
+        console.log('turn_id = ' + turn_id)
+        $('span.entity_' + turn_id + '_' + '0').text(slot_text + ': ');
+        $('.highlight.entity_' + turn_id + '_' + '0').css({'background-color': 'rgba(' +slot_color + ')'});
+    });
+
+    conv_list = [["A", "B", "C", "D"], ["AA", "AB", "AC", "AD"]];
+    console.log('******' + conv_list)
+    $('#slot_table').DataTable({
+        data: conv_list,
+        columns: [
+            { title: "Slot" },
+            { title: "Value" },
+            { title: "Start" },
+            { title: "End"}
+        ]
+    } );
+    
+
+    //plugin bootstrap minus and plus
+//http://jsfiddle.net/laelitenetwork/puJ6G/
+$('.btn-number').click(function(e){
+    e.preventDefault();
+    
+    fieldName = $(this).attr('data-field');
+    type      = $(this).attr('data-type');
+    var input = $("input[name='"+fieldName+"']");
+    var currentVal = parseInt(input.val());
+    if (!isNaN(currentVal)) {
+        if(type == 'minus') {
+            
+            if(currentVal > input.attr('min')) {
+                input.val(currentVal - 1).change();
+            } 
+            if(parseInt(input.val()) == input.attr('min')) {
+                $(this).attr('disabled', true);
+            }
+
+        } else if(type == 'plus') {
+
+            if(currentVal < input.attr('max')) {
+                input.val(currentVal + 1).change();
+            }
+            if(parseInt(input.val()) == input.attr('max')) {
+                $(this).attr('disabled', true);
+            }
+
+        }
+    } else {
+        input.val(0);
+    }
+});
+$('.input-number').focusin(function(){
+   $(this).data('oldValue', $(this).val());
+});
+$('.input-number').change(function() {
+    
+    minValue =  parseInt($(this).attr('min'));
+    maxValue =  parseInt($(this).attr('max'));
+    valueCurrent = parseInt($(this).val());
+    
+    name = $(this).attr('name');
+    if(valueCurrent >= minValue) {
+        $(".btn-number[data-type='minus'][data-field='"+name+"']").removeAttr('disabled')
+    } else {
+        alert('Sorry, the minimum value was reached');
+        $(this).val($(this).data('oldValue'));
+    }
+    if(valueCurrent <= maxValue) {
+        $(".btn-number[data-type='plus'][data-field='"+name+"']").removeAttr('disabled')
+    } else {
+        alert('Sorry, the maximum value was reached');
+        $(this).val($(this).data('oldValue'));
+    }
+    
+    
+});
+$(".input-number").keydown(function (e) {
+        // Allow: backspace, delete, tab, escape, enter and .
+        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 190]) !== -1 ||
+             // Allow: Ctrl+A
+            (e.keyCode == 65 && e.ctrlKey === true) || 
+             // Allow: home, end, left, right
+            (e.keyCode >= 35 && e.keyCode <= 39)) {
+                 // let it happen, don't do anything
+                 return;
+        }
+        // Ensure that it is a number and stop the keypress
+        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+            e.preventDefault();
+        }
+    });
+
 });
 
 
-function highlightSelection(slot) {
+function highlightSelection(turn_id, slot) {
     var selection;
 
     //Get the selected stuff
@@ -202,13 +305,12 @@ function highlightSelection(slot) {
         if (selection.anchorNode.parentNode == selection.focusNode.parentNode) {
             console.log('**** slot on work = '+ slot)
             var span_entity_tag = document.createElement('span');
-            span_entity_tag.className = 'highlight entity';
+            span_entity_tag.className = 'highlight entity entity_' + turn_id  + '_' + '0';
             span_entity_tag.id = slot;
             span_entity_tag.textContent = slot  + ': ';
             
             var span_entity_value = document.createElement('span');
-            span_entity_value.className = 'highlight entity_' +slot;
-            $('.highlight.entity_' +slot).css({'color': 'BLUE'});
+            span_entity_value.className = 'highlight entity_value entity_value_' + turn_id + '_' + '0';
             span_entity_value.id = slot;
             span_entity_value.textContent = selection.toString();
             selection.deleteFromDocument();
@@ -270,7 +372,10 @@ function generateReceivedBody(turn, text){
     body += '</div>'
     return body
 }
-                
+
+function aggregateChat(){
+    $$('.messages').each()
+}
 
 // Image button action
 $(".imgclick").mousedown(function(){

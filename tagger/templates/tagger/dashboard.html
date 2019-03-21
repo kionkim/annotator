@@ -1,0 +1,105 @@
+{% extends "tagger/base.html" %}
+{% block body_block %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+
+<script>
+    var conv = '{{ conv }}'
+    var act = '{{ act }}'
+    var intent = '{{ intent }}'
+    var slot = '{{ slot }}'
+    var conv1
+    $(document).ready(function(){
+        //$.ajax({
+        //    type: 'GET',
+        //    url: 'http://172.23.148.117:8000/api/dialog/100',
+        //    dataType: 'json',
+        //    success: function(data){
+        //        conv1 =data
+        //    }
+        //});
+        //conv1 = $.getJSON('http://172.23.148.117:8000/api/dialog/', function(data){
+        //    console.log(data);
+        //})
+        //console.log('***** = ' + conv1)
+        conv = conv.replace(/&quot;/g, '"')
+               .replace(/&gt;/g, '>')
+               .replace(/&#39;/g, '\'')
+        conv = JSON.parse(conv)
+        conv_res = conv["results"]
+        conv_list = []
+        conv_json = []
+        for (c in conv_res){
+            conv_list.push([conv_res[c]['name'], conv_res[c]['cat'], conv_res[c]['sentences'][1]['text'], 'True', 'False'])
+            conv_res[c].sentences = conv_res[c].sentences[c]['text']
+            conv_json.push(conv_res)
+        }
+        console.log(conv_list)
+        act = JSON.parse(act.replace(/&#39;/g, '"'))
+        intent = JSON.parse(intent.replace(/&#39;/g, '"'))
+        slot = JSON.parse(slot.replace(/&#39;/g, '"'))
+        console.log('act =' + act.length);
+        console.log('intent =' + intent.length);
+
+        $('#conv_table').DataTable( {
+            data: conv_list,
+            columns: [
+                { title: "Name" },
+                { title: "Category" },
+                { title: "Sentence" },
+                { title: "Tagged"},
+                { title: "Flagged"}
+            ]
+        } );
+        
+        $("#conv_table").delegate("tr[role='row']", "click", function(){
+            selected_conv = $(this).closest('tr').find('.sorting_1').text()
+            console.log('selected conv = ' + selected_conv)
+            $.ajax({
+                type: 'POST',
+                url: '../conv_tag/',
+                data: {
+                    'post_id': selected_conv,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                success: function(data){
+                    console.log('success')
+                },
+            })
+        });
+        
+        //$('table').bootstrapTable({
+        //    data: conv_res
+        //});
+    });
+    //function starsFormatter(row, value, inde) {
+    //return row + '<i class="glyphicon glyphicon-star"></i> ';
+//}
+
+//function forksFormatter(value) {
+//    return '<i class="glyphicon glyphicon-cutlery"></i> ' + value;
+//}
+    
+</script>
+<div><table id="conv_table" class="table table-striped table-bordered" style='width:100%''></table>
+</div>
+
+<!--
+    <table class="table table-striped table-bordered table-hover"  cellspacing="0" id="mainTable" data-click-to-select="true" data-show-toggle="true" data-show-columns="true" data-search="true" data-pagination="true">
+        <thead>
+        <tr>
+            <th data-field="name" data-halign="center" data-align="left" data-sortable="true">Name</th>
+            <th data-field="category" data-formatter="starsFormatter" data-halign="center" data-align="left" data-sortable="true">Category</th>
+            <th data-field="sentence" data-formatter="forksFormatter" data-halign="center" data-align="left" data-sortable="true">Starting sentence</th>
+            <th data-field="tagged" data-checkbox="true" data-formatter="starsFormatter"></th>
+            <th data-field="flagged" data-checkbox="true" data-formatter="starsFormatter"></th>
+        </tr>
+        </thead>
+    </table>
+
+-->
+
+{% endblock %}

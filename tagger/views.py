@@ -57,6 +57,18 @@ def register(request):
                            'profile_form':profile_form,
                            'registered':registered})
 
+@login_required
+def show_dashboard(request):
+    with open('tagger/static/data/conv.json', 'r') as f:
+        conv =  f.read()
+    #print(conv)
+    act = ['inform', 'ack', 'introduce', 'notify_success', \
+           'request', 'confirm', 'affirm', 'thank', 'bye', 'offer' ]
+    intent = ['선물', '리필']
+    slot = ['service_type', 'coupon', 'data', 'calling', 'date', 'subscription']
+    # Need to turn conv in json format
+    return render(request, 'tagger/dashboard.html', \
+                  {'conv': conv, 'act': act, 'slot': slot, 'intent': intent})
 
 def user_login(request):
     if request.method == 'POST':
@@ -74,10 +86,14 @@ def user_login(request):
             print("They used username: {} and password: {}".format(username,password))
             return HttpResponse("Invalid login details given")
     else:
-        return render(request, 'tagger/login.html', {})
+        return render(request, 'tagger/login.html')
 
 @login_required
 def show_tagger(request):
+    print('***************** ')
+    if request.method == 'POST':
+        post_id = request.POST['post_id']
+        print('post id = {}'.format(post_id))
     with open('tagger/static/data/conv.json', 'r') as f:
         conv =  f.read()
     #print(conv)
@@ -88,6 +104,7 @@ def show_tagger(request):
             {'data': '(143, 208, 187)'}, {'calling': '(211, 189, 235)'}, \
             {'date': '(154, 159, 249)'}, {'subscription': '(252, 202, 202)'}]
     print(slot)
+    print('render page')
     # Need to turn conv in json format
     return render(request, 'tagger/tagging_page.html', \
                   {'conv': conv, 'act': act, 'slot': slot, 'intent': intent})
