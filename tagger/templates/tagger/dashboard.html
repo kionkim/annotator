@@ -13,14 +13,19 @@
     var slot = '{{ slot }}'
     var conv1
     $(document).ready(function(){
-        //$.ajax({
-        //    type: 'GET',
-        //    url: 'http://172.23.148.117:8000/api/dialog/100',
-        //    dataType: 'json',
-        //    success: function(data){
-        //        conv1 =data
-        //    }
-        //});
+        $.ajax({
+            type: 'GET',
+            url: 'http://172.23.148.117:8000/api/dialog/100/',
+            dataType: 'json',
+            success: function(data){
+                conv1 =data;
+                //var file = new File([''], '../../static/data/conv_1.txt');
+                console.log(conv1)
+                //file.open('w');
+                //file.write(data);
+                //file.close();
+            }
+        });
         //conv1 = $.getJSON('http://172.23.148.117:8000/api/dialog/', function(data){
         //    console.log(data);
         //})

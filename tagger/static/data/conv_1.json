@@ -1,0 +1,446 @@
+[
+    {
+    "name": "TCKT0000140402",
+    "sentences": [
+        {
+            "text": "'요금제 문의' 카테고리로 상담 신청합니다.",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:11:36Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "선택하신 <span style=\"color:red\">'요금제 문의'</span>의 대기시간은 1분입니다.\n대기 시간 중 문의를 원하시는 <strong>[요금제]</strong>를 입력하여 주시면 보다 빠르게 상담이 가능합니다.[]상담이 완료 되었습니다. 감사합니다.",
+            "speaker": "System",
+            "created_date": "2017-11-09T11:12:01Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        }
+    ],
+    "created_date": "2017-11-09T11:11:36Z"
+},
+{
+    "id": 99,
+    "name": "TCKT0000140401",
+    "sentences": [
+        {
+            "text": "'기타' 카테고리로 상담 신청합니다.",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:10:35Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "선택하신 <span style=\"color:red\">'기타'</span>의 대기시간은 1분입니다.\n대기 시간 중 <strong>[문의사항]</strong>을 입력하여 주시면 보다 빠르게 상담이 가능합니다.",
+            "speaker": "System",
+            "created_date": "2017-11-09T11:10:47Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "안녕하세요, 고객님. 고객님만의 전문 상담사 정은진입니다.[]문의 정말 잘 주셨습니다~문의하실 내용을 자세히 기재해 주시면 신속하게 안내해 드리겠습니다.^^",
+            "speaker": "Agent",
+            "created_date": "2017-11-09T11:10:56Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "안녕하세요.",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:11:02Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "네 반갑습니다~",
+            "speaker": "Agent",
+            "created_date": "2017-11-09T11:11:41Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "아이폰 X 출시관련해서 문의 가있어서요. 애플 공홈에 24일부터 출시인데.. 통신사에서는 언제쯤 출시되고 언제쯤부터 예약 받고그러시는지 궁금해서요. 확인이 가능한 부분일까요.?",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:12:11Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "안타깝게도 아직 일자확인이 안되서[]진행되면 카카오톡으로 연락드릴수 있게 처리할텐데요~[]고객님의 정보 기재 부탁 드립니다.[]상담정보 입력 화면이 전송 되었습니다.",
+            "speaker": "Agent",
+            "created_date": "2017-11-09T11:12:53Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "상담정보 입력이 완료되었습니다.[]입력했습니다.",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:12:59Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "채팅상담 요청주신 고객님께서는 명의자 본인이 맞으십니까~?",
+            "speaker": "Agent",
+            "created_date": "2017-11-09T11:13:06Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "넵 맞습니다.[]추가로 문의드릴게있는데. 확인가능할까요.?",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:13:30Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "네~ 소중한 정보확인 정말 감사합니다.^^ 전문상담사 연결해서 상담받으실수 있게 처리해드릴텐데[]잠시만 기다려주시겠어요?",
+            "speaker": "Agent",
+            "created_date": "2017-11-09T11:13:40Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "넵.",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:13:42Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "정은진 (sc01910638) 상담사가 \nsc01110789 상담사에게 전달요청을 하였습니다.[]sc01110789 상담사가 수락 하였습니다.[]정은진 (sc01910638) 상담사가 \n전달완료 하였습니다.",
+            "speaker": "System",
+            "created_date": "2017-11-09T11:18:57Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "반갑습니다. 고객님의 전문 상담사 강현태입니다.[]연락 정말 잘 주셨습니다. 바쁜 시간을 내어 연락주셨을텐데, 신속하게 확인하여 안내해 드리겠습니다.[]우선 향후 사전예약을 손쉽게 참여하실 수 있도록 예약을 도와드리겠습니다.[]고객님, 카카오톡 \"플러스 친구\"를 등록해 주신 고객님께 아이폰 사전예약판매 전에, 사전예약관련 메시지를 발송해 드리고자 합니다.  사전예약관련 메시지 발송을 위해 고객님의 개인정보(성함/휴대폰번호/생년월일) 수집에 동의 하십니까?\n\n*티월드다이렉트를 플러스 친구로 등록해 주시면 됩니다.\n*플러스 친구를 추가하시지 않을 경우 사전예약 안내를 받아보실 수 없으니 꼭 추가해 주시길 부탁드립니다.",
+            "speaker": "Agent",
+            "created_date": "2017-11-09T11:20:34Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "친구등록 하였습니당.[]수집동의하고요 개인정보 아까 팝업창떠서 적어서 완료했는데[]적어드리면 되나요.?[]이승주/01093482740/881029 입니다.[]회원로그인을 했으면 채팅문의가 좀더 쉬웠으려나..제가 맘이급해서 회원로그인 없이 채팅문의드렸습니다..",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:23:05Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "네 고객님.^^",
+            "speaker": "Agent",
+            "created_date": "2017-11-09T11:23:36Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "추가적으로 문의드릴게있는데 문의가능할까요?",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:23:46Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "물론입니다. 제가 안내해드릴 수 있는 내용이라면 바로 답변해 드리겠습니다.^^",
+            "speaker": "Agent",
+            "created_date": "2017-11-09T11:24:38Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "제가 아이폰 7플러스 사용하다 8월쯤 다이렉트샵 통해서 소니 XZP 제품 구매하게되었는데요. 보니 24개월 약정이 새로 들어가있더군요.[]혹시 예약구매시에 위약금이 발생되는 부분인지 확인하고자 연락드렸습니다.",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:25:59Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "추가정보를 확인 후 안내해 드리겠습니다. SKT에 등록해주신 이메일 주소를 말씀 부탁드립니다.^^",
+            "speaker": "Agent",
+            "created_date": "2017-11-09T11:30:32Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "네[]잠시만요 저도 확인을해봐야되서..",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:30:48Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "네 고객님.^^",
+            "speaker": "Agent",
+            "created_date": "2017-11-09T11:31:41Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "dltmdwn88@hotmail.com인거같은데.. 아니면 dltmdwn88@gmail.com이거나...dltmdwn88@nate.com인거같습니다만... 이렇게 드리면 안되죠...?",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:31:56Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "한가지만 결정해서 말씀해주시면 일치여부를 확인해 보겠습니다.^^",
+            "speaker": "Agent",
+            "created_date": "2017-11-09T11:32:30Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "dltmdwn88@hotmail.com인거같습니다.[]똑똑",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:37:35Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "네 고객님. 바로 확인해 보겠습니다. 잠시만 기다려 주시겠습니까? ^^",
+            "speaker": "Agent",
+            "created_date": "2017-11-09T11:37:48Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "넵",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:38:03Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "소중한 정보확인 감사드립니다.  일치하는것으로 확인되었습니다.[]살펴보니 기존 기기 구매시 공시+추가지원금이 제공되었으며,",
+            "speaker": "Agent",
+            "created_date": "2017-11-09T11:38:21Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "다행이네요 휴.",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:38:24Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "만약 사전예약 기간에 새 기기를 구매하신다면 위약금이 부과됩니다.",
+            "speaker": "Agent",
+            "created_date": "2017-11-09T11:38:36Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "아그렇군요..",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:38:38Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "예상위약금은 총 23만원으로 개통 다음달 요금에 합산 청구됩니다.",
+            "speaker": "Agent",
+            "created_date": "2017-11-09T11:38:58Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "넵 알겠습니다~[]확인 감사합니다~",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:39:08Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "네 고객님. 11월에도 좋은일만 함께 하기를 바랍니다. 저는 Tworld Direct 상담사 강현태였습니다. ^^",
+            "speaker": "Agent",
+            "created_date": "2017-11-09T11:39:33Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "넵~수고하세요~~~",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:39:37Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "상담이 완료 되었습니다. 감사합니다.",
+            "speaker": "System",
+            "created_date": "2017-11-09T11:39:37Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        }
+    ],
+    "created_date": "2017-11-09T11:10:35Z"
+},
+{
+    "id": 98,
+    "name": "TCKT0000140400",
+    "sentences": [
+        {
+            "text": "'기타' 카테고리로 상담 신청합니다.",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:10:13Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "선택하신 <span style=\"color:red\">'기타'</span>의 대기시간은 1분입니다.\n대기 시간 중 <strong>[문의사항]</strong>을 입력하여 주시면 보다 빠르게 상담이 가능합니다.",
+            "speaker": "System",
+            "created_date": "2017-11-09T11:11:00Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "반갑습니다.~^^ 고객님만의 전문 상담사 이민서 입니다.[]연락 너무 잘 주셨습니다. 무엇을 도와드릴까요? 제가 신속하게 확인해서 꼼꼼히 안내드리겠습니다.",
+            "speaker": "Agent",
+            "created_date": "2017-11-09T11:11:43Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "금요일 아이폰8 구입후 사은품으로 티월드 다이렉트 샵 사용쿠폰 3만원을 신청했는데 화요일쯤 받아볼수 있다고 했지만 아직 오지 않았습니다 언제쯤 받을수 있을까요",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:14:04Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "사전예약 구매 고객님은 아니신거죠?[]혹시 어느 쿠폰을 신청하신 걸까요?",
+            "speaker": "Agent",
+            "created_date": "2017-11-09T11:17:21Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "5분 동안 응답이 없을 경우 자동으로 상담이 \n종료됩니다. 지금 바로 종료하시려면 아래\n버튼을 클릭해 주시기 바랍니다.",
+            "speaker": "System",
+            "created_date": "2017-11-09T11:19:53Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "사전예약으로 다이렉트샵3만원쿠폰을 보기에서 신청했습니다",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:20:46Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "애플존 쿠폰 말슴이시죠?[]애플존 쿠폰은 개통 후 D+14일 이후, T월드 다이렉트 사이트 > 액세서리 > Apple ZONE에서 구매 시 확인되며, 쿠폰 확인 불가시 문의처: T 기프트 고객센터 ☎ 1600-5380(유료, 평일 10:00~19:00 주말/공휴일 휴무)으로 문의 부탁드립니다.",
+            "speaker": "Agent",
+            "created_date": "2017-11-09T11:23:51Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "5분 동안 응답이 없을 경우 자동으로 상담이 \n종료됩니다. 지금 바로 종료하시려면 아래\n버튼을 클릭해 주시기 바랍니다.[]5분 동안 응답이 없어 상담이 종료되었습니다.\n추가적인 문의가 있으실 경우 온라인 상담/문의 게시판에서 문의 가능합니다.\n감사합니다.",
+            "speaker": "System",
+            "created_date": "2017-11-09T11:25:51Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        }
+    ],
+    "created_date": "2017-11-09T11:10:13Z"
+},
+{
+    "id": 97,
+    "name": "TCKT0000140399",
+    "sentences": [
+        {
+            "text": "'휴대폰 가격문의' 카테고리로 상담 신청합니다.",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:09:51Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "선택하신 <span style=\"color:red\">'휴대폰 가격문의'</span>의 대기시간은 1분입니다.\n대기 시간 중 문의를 원하시는 <strong>[휴대폰의 모델명]</strong>을 입력하여 주시면 보다 빠르게 상담이 가능합니다.",
+            "speaker": "System",
+            "created_date": "2017-11-09T11:10:11Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "갤럭시s8 64기가 코랄블루[]지금현재 온가족 할인을 받고 있는데 변경하면 약정금액이랑 할인금액 알고 싶습니다",
+            "speaker": "Customer",
+            "created_date": "2017-11-09T11:11:01Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "안녕하세요 고객님만의 전문상담사 서정환 입니다.[]상담정보 입력 화면이 전송 되었습니다.",
+            "speaker": "Agent",
+            "created_date": "2017-11-09T11:14:21Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        },
+        {
+            "text": "5분 동안 응답이 없을 경우 자동으로 상담이 \n종료됩니다. 지금 바로 종료하시려면 아래\n버튼을 클릭해 주시기 바랍니다.[]5분 동안 응답이 없어 상담이 종료되었습니다.\n추가적인 문의가 있으실 경우 온라인 상담/문의 게시판에서 문의 가능합니다.\n감사합니다.",
+            "speaker": "System",
+            "created_date": "2017-11-09T11:16:21Z",
+            "domain": null,
+            "intent": null,
+            "dialogActs": []
+        }
+    ],
+    "created_date": "2017-11-09T11:09:51Z"
+}
+
+}
