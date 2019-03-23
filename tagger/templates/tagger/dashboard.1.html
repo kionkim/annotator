@@ -1,0 +1,134 @@
+{% extends "tagger/base.html" %}
+{% block body_block %}
+<!--
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+-->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+<script src="../../static/js/jquery.min.js" type="text/javascript"></script>  
+<script src="../../static/js/jquery.dataTables.min.js" type="text/javascript"></script>
+
+
+<script>
+    var act = '{{ act }}';
+    var intent = '{{ intent }}';
+    var slot = '{{ slot }}';
+    var conv = [];
+    $(document).ready(function(){
+        conv = getIntitalData()
+        console.log(conv)
+        
+        /*
+        $.ajax({
+            type: 'GET',
+            url: "../../static/data/conv_1.json",
+            dataType: 'json',
+            async: false,
+            success: function(data){
+                console.log('*******');
+                conv = data;
+                console.log(conv);
+            }
+        });
+        */
+        console.log(conv);
+        
+        conv_list = [];
+        conv_json = [];
+        for (c in conv){
+            console.log(c);
+            conv_list.push([conv[c]['name'], conv[c]['sentences'][1]['text']]);
+            //conv_res[c].sentences = conv_res[c].sentences[c]['text']
+            //conv_json.push(conv_res)
+        }
+        console.log('conv list = ' + conv_list);
+        act = JSON.parse(act.replace(/&#39;/g, '"'))
+        intent = JSON.parse(intent.replace(/&#39;/g, '"'))
+        slot = JSON.parse(slot.replace(/&#39;/g, '"'))
+        console.log('act =' + act.length);
+        console.log('intent =' + intent.length);
+
+        $('#conv_table').DataTable( {
+            data: conv_list,
+            columns: [
+                { title: "Name" },
+                { title: "Sentence" },
+            ]
+        } );
+
+        $('#conv_table').DataTable( {
+        "processing": true,
+        "serverSide": true,
+        "ajax": $.fn.dataTable.pipeline( {
+            url: conv_list
+            pages: 5 // number of pages to cache
+        } );
+
+
+        // Register an API method that will empty the pipelined data, forcing an Ajax
+        // fetch on the next draw (i.e. `table.clearPipeline().draw()`)
+        $.fn.dataTable.Api.register( 'clearPipeline()', function () {
+            return this.iterator( 'table', function ( settings ) {
+                settings.clearCache = true;
+            } );
+        } );
+
+        /*
+        $("#conv_table").delegate("tr[role='row']", "click", function(){
+            selected_conv = $(this).closest('tr').find('.sorting_1').text()
+            console.log('selected conv = ' + selected_conv)
+            $.ajax({
+                type: 'POST',
+                url: '../conv_tag/',
+                data: {
+                    'post_id': selected_conv,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                success: function(data){
+                    console.log('success')
+                },
+            })
+        });
+        */
+
+    });
+
+    function getIntitalData(){
+        var conv_set;
+        $.getScript( "../../static/data/conv_1.json", function( data, textStatus, jqxhr ) {
+        console.log( data ); // Data returned
+        //console.log( textStatus ); // Success
+        //console.log( jqxhr.status ); // 200
+        console.log( "Load was performed." );
+        window.conv = data;
+        });
+        return conv_set;
+    }
+</script>
+
+<table id="conv_table" class="display nowrap" style="width:100%">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Sentence</th>
+            </tr>
+        </thead>
+    </table>
+
+<!--
+    <table class="table table-striped table-bordered table-hover"  cellspacing="0" id="mainTable" data-click-to-select="true" data-show-toggle="true" data-show-columns="true" data-search="true" data-pagination="true">
+        <thead>
+        <tr>
+            <th data-field="name" data-halign="center" data-align="left" data-sortable="true">Name</th>
+            <th data-field="category" data-formatter="starsFormatter" data-halign="center" data-align="left" data-sortable="true">Category</th>
+            <th data-field="sentence" data-formatter="forksFormatter" data-halign="center" data-align="left" data-sortable="true">Starting sentence</th>
+            <th data-field="tagged" data-checkbox="true" data-formatter="starsFormatter"></th>
+            <th data-field="flagged" data-checkbox="true" data-formatter="starsFormatter"></th>
+        </tr>
+        </thead>
+    </table>
+
+-->
+
+{% endblock %}

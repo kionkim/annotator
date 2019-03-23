@@ -1,23 +1,21 @@
 {% extends "tagger/base.html" %}
-
 {% block body_block %}
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
-<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+<link rel="stylesheet" href="../../static/css/base/bootstrap.min.css">
+<link rel="stylesheet" href="../../static/css/tagger/tagger.css">
+<script src="../../static/js/base/jquery.min.js"></script>
+<script src="../../static/js/tagger/tagger.js"></script>  
 
 <script type="text/javascript">
-    var conv = '{{ conv }}'
-    var act = '{{ act }}'
-    var intent = '{{ intent }}'
-    var slot = '{{ slot }}'
-  </script>
-<script src="../../static/js/tagger.js"></script>  
+    var act = '{{ act }}';
+    var intent = '{{ intent }}';
+    var slot = '{{ slot }}';
+</script>
+
+
 <!------ Include the above in your HEAD tag ---------->
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="chatbody">
                 <div class="panel panel-primary">
                     <div class="panel-heading top-bar">
@@ -33,7 +31,7 @@
             </div>
         </div>
 
-        <div class="col-md-8">
+        <div class="col-md-6">
             <div class="panel panel-primary">
                 <div class="panel-heading top-bar">
                     <div class="col-md-8">
@@ -41,26 +39,22 @@
                     </div>
                 </div>
                 <div>
-                    <form>
+                    <form class = 'tagger_form'>
                         <div class="form-group">
-                            <label for="turn_id">Turn ID</label>
-                            <input class="form-control" id="turn_id"></input>
-                        </div>
-                        <div class="form-group">
-                            <label for="conv_intent">대화 Intent</label>
-                            <select class="form-control" id="conv_intent"></select>
+                            <label for="turn_id_input">Turn ID</label>
+                            <input class="form-control" id="turn_id_input"></input>
                         </div>
                         <div class="form-group"> 
-                            <label for="intent">문장 Intent</label>
-                            <select class="form-control" id="sentence_intent"></select>
+                            <label for="intent_input">문장 Intent</label>
+                            <select class="form-control" id="sentence_intent_input"></select>
                         </div> 
                         <div class="form-group">
-                            <label for="act">Act</label>
-                            <select class="form-control" id="act"></select>
+                            <label for="acts_input">Act</label>
+                            <select class="form-control" id="act_input"></select>
                         </div>
                         <div class="form-group">
-                            <label for="slots">Slots</label>
-                            <div class='slot_list'>
+                            <label for="slots_input">Slots</label>
+                            <div class='col-md-6 slot_list'>
                                 <div class= 'slot_value_start'>3</div>
                                 <div class = 'slot_value'>기기변경</div>
                                 <div class = 'slot_value_end'>5</div>
