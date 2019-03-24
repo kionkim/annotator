@@ -15,7 +15,7 @@ from django import forms
 from tagger.models import UserProfileInfo
 from django.contrib.auth.models import User
 
-
+@login_required
 def index(request):
     return render(request, 'tagger/index.html')
 
@@ -57,7 +57,7 @@ def register(request):
                            'profile_form':profile_form,
                            'registered':registered})
 
-# @login_required
+@login_required
 def show_dashboard(request):
     with open('tagger/static/data/conv.json', 'r') as f:
         conv =  f.read()
@@ -71,10 +71,13 @@ def show_dashboard(request):
                   {'act': act, 'slot': slot, 'intent': intent})
 
 def user_login(request):
+    print('^^^^^^^^^^^^^^^^^^')
+    print(request.method)
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(username=username, password=password)
+        print('login success = {}'.format(user))
         if user:
             if user.is_active:
                 login(request,user)
@@ -88,7 +91,7 @@ def user_login(request):
     else:
         return render(request, 'tagger/login.html')
 
-##@login_required
+@login_required
 def show_tagger(request):
     print('***************** ')
     if request.method == 'POST':

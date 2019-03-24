@@ -89,7 +89,7 @@
   }
 
   .msg_container_base{
-    background: rgba(178, 202, 165);
+    background: rgb(241, 224, 239);
     margin: 0;
     padding: 0 10px 10px;
     max-height:100%;
@@ -219,34 +219,24 @@
     background-color: rgb(245,221, 173);
 }
 
-  .popup-overlay{
-    /*Hides pop-up when there is no "active" class*/
-    visibility:hidden;
-    position:absolute;
-    background:#ffffff;
-    border:1px solid #666666; 
-    width:400px;
-    height:200px;
-    left:25%;
+  .slots_in_tagger_info{
+    background_color: black;
+    color: white;
+    border-radius: 15px 15px 15px 15px;
   }
-  .popup-overlay.active{
-    /*displays pop-up when "active" class is present*/
-    visibility:visible;
-    margin-top: 50px;
-    margin-left: 10px;
-  }
+
+  .modal {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    bottom: 10px;
+    left: 20px;
+    z-index: 10040;
+    overflow: auto;
+    overflow-y: auto;
+ }
   
-  .popup-content {
-    /*Hides pop-up content when there is no "active" class */
-   visibility:hidden;
-  }
-  
-  .popup-content.active {
-    /*Shows pop-up content when "active" class is present */
-    visibility:visible;
-  }
-  
-  button{
+  .button{
     display:inline-block;
     vertical-align:middle;
     border-radius:30px;

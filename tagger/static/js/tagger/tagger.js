@@ -3,16 +3,15 @@ $(document).ready(function() {
     var conv = getIntitalData();
     var original_dialogue ;
     var turn_id;
-    var tag_seq = 0;
-    var cur_tag = tag_seq;
+    var tag_id = 0;
     var selectedText;
-    var slot_on_work;
     var start_pos;
     var end_pos;
     var startPoint;
     var endPoint;
     var anchorTag;
     var focusTag;
+    var aaa;
     conv = conv[0];
     act = JSON.parse(act.replace(/&#39;/g, '"'));
     intent = JSON.parse(intent.replace(/&#39;/g, '"'));
@@ -30,29 +29,16 @@ $(document).ready(function() {
     // SET dialogue
     original_dialogue = generateChatBody(conv, '.msg_container_base');
 
-    $.each(original_dialogue, function(key, value){
-        console.log(key + ':' + value);
-    })
-    
-    $("#btn-chat").click( function(event) {
-        alert("You clicked the button using JQuery!");
-        console.log('You clicked the button')
-    });
-
     // Hightlight script: https://jsfiddle.net/Bilalchk123/1o4j0w2v/
     // Highlight when conversation clicked
     $(".messages").mousedown(function (e1) {
         mouseXPosition = e1.pageX;//register the mouse down position
         mouseYPosition = e1.pageY;//register the mouse down position
-        $(".messages").removeClass("selectedConv");
-        $(this).addClass("selectedConv")
-        console.log('highlighted area = ' + $(this).attr('id'))
-        cur_turn_id = $(this).attr('id')
     });
 
     // Highlight when text selected
     $(".messages").mouseup(function (e2) {
-        slot_on_work = $('#slot').find(':selected').text();
+        
         var highlighted = false;
         selection = window.getSelection();
         selectedText = selection.toString();
@@ -60,6 +46,10 @@ $(document).ready(function() {
         endPoint = window.getSelection().getRangeAt(0).endOffset;
         anchorTag = selection.anchorNode.parentNode;
         focusTag = selection.focusNode.parentNode;
+        turn_id = anchorTag.parentElement.id;
+        chat_class = selection.focusNode.parentNode.parentElement.className;
+        console.log('chat_class = ' + chat_class);
+
 
         if ((e2.pageX - mouseXPosition) < 0) {
             focusTag = selection.anchorNode.parentNode;
@@ -69,7 +59,8 @@ $(document).ready(function() {
             highlighted = true;
 
             if (anchorTag.className !== "highlight") {
-                highlightSelection(cur_turn_id, tag_seq, slot_on_work);
+                res = highlightSelection(tag_id);
+                tag_id = res[1];
             } else {
                 var afterText = selectedText + "<span class = 'highlight'>" + anchorTag.innerHTML.substr(endPoint) + "</span>";
                 anchorTag.innerHTML = anchorTag.innerHTML.substr(0, startPoint);
@@ -77,7 +68,8 @@ $(document).ready(function() {
             }
         }else{
             if(anchorTag.className !== "highlight" && focusTag.className !== "highlight"){
-                highlightSelection(cur_turn_id, tag_seq, slot_on_work);  
+                res = highlightSelection(tag_id);  
+                tag_id = res[1];
                 highlighted = true;
             }
         }
@@ -114,11 +106,11 @@ $(document).ready(function() {
             selection.deleteFromDocument();
             focusTag.innerHTml = focusTag.innerHTML.substr(endPoint);
             outerHtml += beforeHtml;
-            focusTag.insertAdjacentHTML('beforebegin', outerHtml );
+            focusTag.insertAdjacentHTML('beforebegin', outerHtml);
         }
 
         if (!highlighted) {
-            highlightSelection(cur_turn_id, tag_seq, slot_on_work);
+            highlightSelection(tag_id);
         }
         $('.highlight').each(function(){
             if($(this).html() == ''){
@@ -128,50 +120,71 @@ $(document).ready(function() {
 
         selection.removeAllRanges();
 
-        renderConv_info(cur_turn_id)
-        //log_selection_info(mouseXPosition, mouseYPosition, selectedText, startPoint, endPoint, anchorTag, focusTag);        
+        renderConv_info(turn_id)
+
+        // Action when text is really selected
+
         if (selectedText.length > 0){
-            renderConv_info(cur_turn_id);
+            renderConv_info(turn_id);
             //start_pos = original_dialogue[cur_turn_id] selectedText
             //log_selection_info(mouseXPosition, mouseYPosition, selectedText, startPoint, endPoint, anchorTag, focusTag);        
-            $(".popup-overlay, .popup-content").removeClass("active");
-            tag_seq += 1;
+            
             a = $(window).innerWidth();
             b = $('.popup-content').outerWidth();
             
-            $(".popup-overlay, .popup-content").addClass("active").css({
+            $(".modal").css({
                 left: Math.min(mouseXPosition, (a - b)),
                 top: mouseYPosition + 20
             });
+
+            $("#slot_selector").modal('show');
+
             $('#value').val(selectedText);
-            console.log('*&*&*&*&*&&* tag_seq ' + tag_seq)
-            
+            console.log('*&*&*&*&*&&* tag_id ' + tag_id)
+
+            $(".messages").removeClass("selectedConv");
+            $(this).addClass("selectedConv");
         }
-        
     });
 
-    $("#dialogue_plus").click(function(){
+    $("#add_dialog").click(function(){
+        console.log('turn id in dialogue plus= ' + turn_id);
+        aaa = $(this);
+        
         _turn_id = parseInt(turn_id.split('_')[1]) + 1;
         console.log('_turn_id = ' + _turn_id);
         _html = generateReceivedBody(_turn_id , '');
         console.log('_html = ' + _html);
-        $(this).append(_html);
+        
+        element = $('.selectedConv')[0].parentElement.parentElement.parentElement;
+        //console.log('element = ' + "." + element);
+        //onsole.log('element = ' + "." + element.replace(' ', '.'));
+        $(element).append(_html);
     });
 
-    $("#slot").change(function (){
-        slot_color = $(this).val();
-        cur_slot_text = $('#slot option:selected').text();
-        console.log('ITEM SELECTION slot_text = ' + cur_slot_text);
-        console.log('span.entity.' + cur_turn_id + '_seq_' + cur_tag);
-        console.log('cur tag = ' + cur_tag);
-        console.log('span.entity_value.' + cur_turn_id + '_seq_' + cur_tag);
-        $('span.entity.' + cur_turn_id + '_seq_' + cur_tag).text(cur_slot_text + ': ');
-        $('span.entity_value.' + cur_turn_id + '_seq_' + cur_tag).removeClassRegExp(/^entity_/)
-        .addClass('entity_value')
-        .addClass('entity_' + cur_slot_text)
-        .addClass(turn_id + '_seq_' + cur_tag);
-        //log_selection_info(mouseXPosition, mouseYPosition, selectedText, startPoint, endPoint, anchorTag, focusTag);
+    $("#remove_dialog").click(function(){
+        console.log('turn id in dialogue plus= ' + turn_id);
+        aaa = $(this);
+        
+        _turn_id = parseInt(turn_id.split('_')[1]) + 1;
+        console.log('_turn_id = ' + _turn_id);
+        _html = generateReceivedBody(_turn_id , '');
+        console.log('_html = ' + _html);
+        
+        element = $('.selectedConv')[0].parentElement.parentElement.parentElement;
+        //console.log('element = ' + "." + element);
+        //onsole.log('element = ' + "." + element.replace(' ', '.'));
+        $(element).append(_html);
+    });
 
+    $("#slot_in_modal").change(function (){
+        slot_color = $(this).val();
+        slot_text = $('#slot_in_modal option:selected').text();
+        console.log('turn_id in change slot = ' + turn_id);
+        console.log('tag_id in change slot = ' + tag_id);
+        change_slot(turn_id, tag_id, slot_text, slot_color);
+        $("#slots_input").append('<span class="badge badge-secondary ' + turn_id + '_in_modal>' + slot_text + '</span>');
+        
     });
 
     $.fn.removeClassRegExp = function (regexp) {
@@ -190,41 +203,95 @@ $(document).ready(function() {
         }
         return this;
     };
+
+    jQuery.fn.disableTextSelect = function() {
+        return this.each(function() {
+            $(this).css({
+                'MozUserSelect':'none',
+                'webkitUserSelect':'none'
+            }).attr('unselectable','on').bind('selectstart', function() {
+                return false;
+            });
+        });
+    };
+    
+    jQuery.fn.enableTextSelect = function() {
+        return this.each(function() {
+            $(this).css({
+                'MozUserSelect':'',
+                'webkitUserSelect':''
+            }).attr('unselectable','off').unbind('selectstart');
+        });
+    };
+
 });
 
+function change_slot(turn_id, tag_id, slot_text, slot_color){
+    console.log('slot_text in change_slot = ' + slot_text);
+    console.log('span.entity.' + turn_id + '_seq_' + tag_id);
+    console.log('cur tag = ' + tag_id);
+    console.log('span.entity_value.' + turn_id + '_seq_' + tag_id);
+    $('span.entity.' + turn_id + '_seq_' + tag_id).text(slot_text + ': ');
+    $('span.entity_value.' + turn_id + '_seq_' + tag_id).removeClassRegExp(/^entity_/)
+    .addClass('entity_value')
+    .addClass('entity_' + slot_text)
+    .addClass(turn_id + '_seq_' + tag_id);
+    //log_selection_info(mouseXPosition, mouseYPosition, selectedText, startPoint, endPoint, anchorTag, focusTag);
+}
 
-function highlightSelection(turn_id, tag_seq, slot) {
+function highlightSelection(tag_id) {
+    
     var selection;
-
     //Get the selected stuff
     if (window.getSelection)
         selection = window.getSelection();
     else if (typeof document.selection != "undefined")
         selection = document.selection;
 
+    turn_id = selection.focusNode.parentNode.parentElement.id;
+
+    console.log('turn_id = ' + turn_id);
+    console.log('tag_id = ' + tag_id);
+    console.log('focus node = ' + selection.focusNode.parentNode);
+    console.log('selection is collapsed = ' + selection.isCollapsed);
+
+    slot = $('#slot_in_modal').find(':selected').text();
+
     //Get a the selected content, in a range object
     var range = selection.getRangeAt(0);
+
+    log_selection_info(mouseXPosition, mouseYPosition, selection);        
 
     //If the range spans some text, and inside a tag, set its css class.
     if (range && !selection.isCollapsed) {
         if (selection.anchorNode.parentNode == selection.focusNode.parentNode) {
-            console.log('**** slot on work = '+ slot)
+            tag_id += 1;         
+            // Generate span tag with entity class
             var span_entity_tag = document.createElement('span');
-            span_entity_tag.className = 'highlight entity ' + turn_id  + '_seq_' + tag_seq;
+            span_entity_tag.className = 'highlight entity ' + turn_id  + '_seq_' + tag_id;
             span_entity_tag.id = slot;
             span_entity_tag.textContent = slot  + ': ';
-            
+            span_entity_tag.disableTextSelect = true;
+
+            // Generate span tag with entity value class
             var span_entity_value = document.createElement('span');
-            span_entity_value.className = 'highlight entity_value entity_' + slot + ' ' + turn_id + '_seq_' + tag_seq;
+            span_entity_value.className = 'highlight entity_value entity_' + slot + ' ' + turn_id + '_seq_' + tag_id;
             span_entity_value.id = slot;
             span_entity_value.textContent = selection.toString();
+
+            // Remove text and insert generated tag
             selection.deleteFromDocument();
             range.insertNode(span_entity_value);
             range.insertNode(span_entity_tag);
-            cur_tag = tag_seq;
-            console.log('current tag = ' + cur_tag);
+
+            console.log('current tag = ' + tag_id);
+            $(".messages").removeClass("selectedConv");
+            $(this).addClass("selectedConv")
+
+            turn_id = $(this).attr('id')
         }
     }
+    return [turn_id, tag_id, ]
 }
 
 // Generate chat-body
@@ -260,11 +327,12 @@ function generateSentBody(turn, text){
 }
 
 function generateReceivedBody(turn, text){
-    body = '<div class="row msg_container base_receive">'
-    body += '<div class="col-md-2 avatar"><img src="../../static/images/avatar.png" class=" img-responsive "></div>'
-    body += '<div class="col-md-10"><div class="messages msg_receive col-md-10" id = "turn_' + turn + '">' + '<p>' + text + '</p></div>'
-    body += '<div class="col-md-2"><input id="dialogue_plus" class="imgclick" style="outline: none;" type="image" src="../../static/images/plus.png" width="20px" height="20px" border="0"></div>'
-    body += '</div>'
+    body = '<div class="row msg_container base_receive">';
+    body += '<div class="col-md-2 avatar"><img src="../../static/images/avatar.png" class=" img-responsive "></div>';
+    body += '<div class="col-md-10"><div class="messages msg_receive col-md-10" id = "turn_' + turn + '">' + '<p>' + text + '</p></div>';
+    body += '<div class="col-md-2"><button type="button" class="btn btn-default btn-sm" id = "add_dialog"><span class="glyphicon glyphicon-trash"></span></button>';
+    body += '<button type="button" class="btn btn-default btn-sm" id = "remove_dialog"><span class="glyphicon glyphicon-trash"></span></button></div>';
+    body += '</div></div>'
     return body
 }
 
@@ -301,14 +369,10 @@ function renderConv_info(turn_id, intent, acts, slots){
     $('input[id="acts_input"]').val(acts);
     $('input[id="slots_input"]').val(slots);
 }
-function log_selection_info(mouseXPosition, mouseYPosition, selectedText, startPoint, endPoint, anchorTag, focusTag){
+function log_selection_info(mouseXPosition, mouseYPosition, selectedText){
     console.log('mouseXPosition = ' + mouseXPosition);
     console.log('mouseYPosition = ' + mouseYPosition);
     console.log('selectedText = ' + selectedText);
-    console.log('startPoint = ' + startPoint);
-    console.log('endPoint = ' + endPoint);
-    console.log('anchorTag = ' + anchorTag.Innerhtml);
-    console.log('focusTag = ' + focusTag.toString);
 }
 
 function set_menus(act, intent, slot){
@@ -318,7 +382,7 @@ function set_menus(act, intent, slot){
         var element = $('<option>' + act[x] + '</option>');
         elements.push(element)
     }
-    $('#act').append(elements);
+    $('#act_input').append(elements);
 
     // Set menu for slot
     var elements = []
@@ -326,7 +390,7 @@ function set_menus(act, intent, slot){
         value = Object.keys(slot[key])[0];
         elements.push($('<option value = "' + slot[key][value] + '">' + value + '</option>'));
     });
-    $('#slot').append(elements);
+    $('#slot_in_modal').append(elements);
 
     // Set menu for sentence intent
     var elements = []
@@ -334,7 +398,7 @@ function set_menus(act, intent, slot){
         var element = $('<option>' + intent[x] + '</option>');
         elements.push(element)
     }
-    $('#sentence_intent').append(elements);
+    $('#sentence_intent_input').append(elements);
 }
     
     
