@@ -21,7 +21,8 @@ from tagger import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^$', views.index, name = 'index'),
-    url(r'^special/', views.special, name = 'special'),
+    url(r'^tagger/dashboard', views.show_dashboard, name = 'dashboard'),
+    # url(r'^special/', views.show_dashboard, name = 'special'),
     url(r'^tagger/', include(('tagger.urls', 'tagger'), namespace = 'tagger')),
     url(r'^logout/$', views.user_logout, name = 'logout'),
 ]

@@ -71,8 +71,6 @@ def show_dashboard(request):
                   {'act': act, 'slot': slot, 'intent': intent})
 
 def user_login(request):
-    print('^^^^^^^^^^^^^^^^^^')
-    print(request.method)
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -81,7 +79,7 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request,user)
-                return HttpResponseRedirect(reverse('index'))
+                return HttpResponseRedirect(reverse('dashboard'))
             else:
                 return HttpResponse("Your account was inactive.")
         else:

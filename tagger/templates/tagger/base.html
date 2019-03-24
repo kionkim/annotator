@@ -18,12 +18,25 @@
 
   <title>DMIG Anonotation Framework</title>
 
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="{% static 'js/base/jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/base/bootstrap.bundle.min.js' %}"></script>
 
+{% block script %}
+{% endblock %}
+
+<!-- Menu Toggle Script -->
+<script>
+  $("#menu-toggle").click(function(e) {
+    e.preventDefault();
+    $("#wrapper").toggleClass("toggled");
+  });
+</script>
 
 </head>
 
 <body>
-
+    
   <div class="d-flex" id="wrapper">
 
     <!-- Sidebar -->
@@ -85,18 +98,7 @@
   <!-- /#wrapper -->
 
 
-  <!-- Bootstrap core JavaScript -->
-  <script type="text/javascript" src="{% static 'js/base/jquery.min.js' %}"></script>
-  <script type="text/javascript" src="{% static 'js/base/bootstrap.bundle.min.js' %}"></script>
-
-  <!-- Menu Toggle Script -->
-  <script>
-    $("#menu-toggle").click(function(e) {
-      e.preventDefault();
-      $("#wrapper").toggleClass("toggled");
-    });
-  </script>
-
+  
 </body>
 
 </html>

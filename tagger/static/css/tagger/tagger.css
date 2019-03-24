@@ -219,7 +219,7 @@
     background-color: rgb(245,221, 173);
 }
 
-  .slots_in_tagger_info{
+  .badge_secondary.slots_in_tagger_info{
     background_color: black;
     color: white;
     border-radius: 15px 15px 15px 15px;

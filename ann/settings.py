@@ -138,4 +138,3 @@ MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
 
 LOGIN_URL = '/tagger/user_login/'
-LOGIN_REDIRECT_URL = '/tagger/conv_tag'
