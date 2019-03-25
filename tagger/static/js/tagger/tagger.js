@@ -21,7 +21,8 @@ $(document).ready(function() {
 	// 	.replace(/<\/?[^>]+(>|$)/g, '');
 	// console.log('conv = ' + conv);
 	conv = getInitialData();
-	conv = conv[0];
+	console.log(conv.length)
+	conv = conv[1];
 	act = JSON.parse(act.replace(/&#39;/g, '"'));
 	intent = JSON.parse(intent.replace(/&#39;/g, '"'));
 	slot = JSON.parse(slot.replace(/&#39;/g, '"'));
@@ -138,11 +139,11 @@ $(document).ready(function() {
 			//log_selection_info(mouseXPosition, mouseYPosition, selectedText, startPoint, endPoint, anchorTag, focusTag);
 
 			a = $(window).innerWidth();
-			b = $('.popup-content').outerWidth();
+			b = $('.popup-content').innerWidth();
 
 			$('.modal').css({
-				left: Math.min(mouseXPosition, a - b),
-				top: mouseYPosition + 20
+				left: Math.min(mouseXPosition - 390, a - b),
+				top: mouseYPosition
 			});
 
 			$('#slot_selector').modal('show');

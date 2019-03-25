@@ -7,6 +7,10 @@
   background: aliceblue;
 }
 
+div.modal-backdrop.in{
+  opacity: .7;
+}
+
 .panel-primary{
     margin-left: 20px;
     margin-right: 20px;
