@@ -162,7 +162,7 @@ $(document).ready(function() {
 
 		_turn_id = parseInt(turn_id.split('_')[1]) + 1;
 		console.log('_turn_id = ' + _turn_id);
-		_html = generateReceivedBody(_turn_id, '');
+		_html = generateEditableBody(_turn_id, '');
 		console.log('_html = ' + _html);
 
 		element = $('.selectedConv')[0].parentElement.parentElement.parentElement;
@@ -286,7 +286,7 @@ function highlightSelection(tag_id) {
 			span_entity_tag.className = 'highlight entity ' + turn_id + '_seq_' + tag_id;
 			span_entity_tag.id = slot;
 			span_entity_tag.textContent = slot + ': ';
-			span_entity_tag.disableTextSelect = true;
+			
 
 			// Generate span tag with entity value class
 			var span_entity_value = document.createElement('span');
@@ -298,6 +298,8 @@ function highlightSelection(tag_id) {
 			selection.deleteFromDocument();
 			range.insertNode(span_entity_value);
 			range.insertNode(span_entity_tag);
+			
+			$("span.entity").disableTextSelect();
 
 			console.log('current tag = ' + tag_id);
 			$('.messages').removeClass('selectedConv');
@@ -343,7 +345,7 @@ function generateSentBody(turn, text) {
 
 function generateReceivedBody(turn, text) {
 	body = '<div class="row msg_container base_receive">';
-	body += '<div class="col-md-2 avatar"><img src="../../static/images/avatar.png" class=" img-responsive "></div>';
+	body += '<div class="col-md-2 avatar" ><img src="../../static/images/avatar.png" class=" img-responsive "></div>';
 	body +=
 		'<div class="col-md-10"><div class="messages msg_receive col-md-10" id = "turn_' +
 		turn +
@@ -357,6 +359,25 @@ function generateReceivedBody(turn, text) {
 		'<button type="button" class="btn btn-default btn-sm" id = "remove_dialog"><span class="glyphicon glyphicon-trash"></span></button></div>';
 	body += '</div></div>';
 	return body;
+}
+
+function generateEditableBody(turn, text){
+	body = '<div class="row msg_container base_receive">';
+	body += '<div class="col-md-2 avatar" ><img src="../../static/images/avatar.png" class=" img-responsive "></div>';
+	body +=
+		'<div class="col-md-10"><div class="messages msg_receive col-md-10" id = "turn_' +
+		turn +
+		'">' +
+		'<input class = "form-control" id = "edited_' + turn + '">' +
+		text +
+		'</input></div>';
+	body +=
+		'<div class="col-md-2"><button type="button" class="btn btn-default btn-sm" id = "add_dialog"><span class="glyphicon glyphicon-trash"></span></button>';
+	body +=
+		'<button type="button" class="btn btn-default btn-sm" id = "remove_dialog"><span class="glyphicon glyphicon-trash"></span></button></div>';
+	body += '</div></div>';
+	return body;
+
 }
 
 function aggregateChat() {
