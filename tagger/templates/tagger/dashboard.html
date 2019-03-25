@@ -17,23 +17,46 @@
 {% block body_block %}
 <script>
     $(document).ready(function(){
-        var conv = getIntitalData();
-        console.log(conv);
+        // Develop mode
+        // var conv = getIntitalData();
         var conv_list = [];
-        for (c in conv){
-            conv_list.push([conv[c]['name'], conv[c]['sentences'][1]['text']]);
-        }
-        
-        console.log('conv list = ' + conv_list);
-    
-        $('#conv_list').DataTable( {
+        $('#conv_table').DataTable( {
             "ajax": {
-                "dataSrc": conv_list,
+                'url': 'http://172.23.148.117:8000/api/dialog/',
+                "dataSrc": function(json){
+                    
+                    let conv_list = [];
+                    data = json['results'];
+                    for (c in data){
+                        console.log('json 1 = ' + c);
+                        conv_list.push({'name': data[c]['name'], 'sentence': data[c]['sentences'][1]['text']});
+                        console.log({'name': data[c]['name'], 'sentence': data[c]['sentences'][1]['text']});
+                    }
+                    return conv_list;
+                }
             },
             "columns": [
                 { "data": "name" },
                 { "data": "sentence" },
             ]
+        });
+
+        $("#conv_table").delegate("tr[role='row']", "click", function(){
+            selected_conv = $(this).closest('tr').find('.sorting_1').text()
+            console.log('selected conv = ' + selected_conv)
+            
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'tagger:conv_tag' %}",
+                data: {
+                    'post_id': selected_conv,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                success: function(data){
+                    console.log('success');
+                    window.location = '/tagger/conv_tag'+'?post_id=' + selected_conv;
+                },
+            })
         });
     });
 
@@ -46,19 +69,16 @@
     }
 </script>
 
-<table id="conv_list" class="table table-striped table-bordered" style="width:100%">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Sentence</th>
-        </tr>
-    </thead>
-    <tfoot>
-        <tr>
-            <th>Name</th>
-            <th>Sentence</th>
-        </tr>
-    </tfoot>
-</table>
+<div class="col-md-8">
+    <table id="conv_table" class="table table-striped table-bordered" style="width:100%">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Sentence</th>
+            </tr>
+        </thead>
+    </table>
+            
+</div>
 
 {% endblock %}

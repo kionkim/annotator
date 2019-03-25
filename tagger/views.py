@@ -15,6 +15,8 @@ from django import forms
 from tagger.models import UserProfileInfo
 from django.contrib.auth.models import User
 
+import json
+
 @login_required
 def index(request):
     return render(request, 'tagger/index.html')
@@ -79,7 +81,7 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request,user)
-                return HttpResponseRedirect(reverse('dashboard'))
+                return HttpResponseRedirect(reverse('tagger:dashboard'))
             else:
                 return HttpResponse("Your account was inactive.")
         else:
@@ -91,13 +93,24 @@ def user_login(request):
 
 @login_required
 def show_tagger(request):
-    print('***************** ')
+    import json
     if request.method == 'POST':
         post_id = request.POST['post_id']
-        print('post id = {}'.format(post_id))
-    with open('tagger/static/data/conv.json', 'r') as f:
-        conv =  f.read()
-    #print(conv)
+        
+    elif request.method == 'GET':
+        # post_id = request.GET.get('post_id')
+
+        # with open('tagger/static/data/conv_1.json', 'r') as f:
+        #     conv =  f.read()
+        # print('post id = {}'.format(post_id))
+        # conv_json = json.loads(conv.replace("'", '')) # json.loads에서는 '과 "이 같이 나오면 순서를 바꿔버림
+        
+        # print(conv_json[0]['name'])
+        # selected_conv = [x for x in conv_json if x['name'] == post_id][0]
+
+        # Temporary
+        pass
+
     act = ['inform', 'ack', 'introduce', 'notify_success', \
            'request', 'confirm', 'affirm', 'thank', 'bye', 'offer' ]
     intent = ['선물', '리필']
@@ -105,10 +118,10 @@ def show_tagger(request):
             {'data': '(143, 208, 187)'}, {'calling': '(211, 189, 235)'}, \
             {'date': '(154, 159, 249)'}, {'subscription': '(252, 202, 202)'}]
     print(slot)
-    print('render page')
-    # Need to turn conv in json format
+
+    #Need to turn conv in json format
     return render(request, 'tagger/tagging_page.html', \
-                  {'conv': conv, 'act': act, 'slot': slot, 'intent': intent})
+                  {'conv': '', 'act': act, 'slot': slot, 'intent': intent})
 
 
 def load_excel_to_sqlite(file = '~/Downloads/190112_chat.xlsx'):
