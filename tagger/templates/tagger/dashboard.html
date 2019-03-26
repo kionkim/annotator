@@ -1,6 +1,6 @@
 {% extends "tagger/base.html" %}
 {% block script %}
-<link rel='stylesheet' href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+
 <script src="../../static/js/table/jquery.dataTables.min.js" type="text/javascript"></script>
 <script src="../../static/js/table/dataTables.bootstrap4.min.js" type="text/javascript"></script>
 {% endblock %}
@@ -9,34 +9,34 @@
 <script>
     $(document).ready(function(){
         // Develop mode
-        var conv = getIntitalData();
-        var conv_list = [];
-        for (c in conv){
-            console.log('conv = ' + c);
-            conv_list.push({'name': conv[c]['name'], 'sentence': conv[c]['sentences'][1]['text']});
-            console.log({'name': conv[c]['name'], 'sentence': conv[c]['sentences'][1]['text']});
-        }
+        // var conv = getIntitalData();
+        // var conv_list = [];
+        // for (c in conv){
+        //     console.log('conv = ' + c);
+        //     conv_list.push({'name': conv[c]['name'], 'sentence': conv[c]['sentences'][1]['text']});
+        //     console.log({'name': conv[c]['name'], 'sentence': conv[c]['sentences'][1]['text']});
+        // }
         // Actual data from rest api
-        // $('#conv_table').DataTable( {
-        //     "ajax": {
-        //         'url': 'http://172.23.148.117:8000/api/dialog/',
-        //         "dataSrc": function(json){
+        $('#conv_table').DataTable( {
+            "ajax": {
+                'url': 'http://172.23.148.117:8000/api/dialog/',
+                "dataSrc": function(json){
                     
-        //             let conv_list = [];
-        //             data = json['results'];
-        //             for (c in data){
-        //                 console.log('json 1 = ' + c);
-        //                 conv_list.push({'name': data[c]['name'], 'sentence': data[c]['sentences'][1]['text']});
-        //                 console.log({'name': data[c]['name'], 'sentence': data[c]['sentences'][1]['text']});
-        //             }
-        //             return conv_list;
-        //         }
-        //     },
-        //     "columns": [
-        //         { "data": "name" },
-        //         { "data": "sentence" },
-        //     ]
-        // });
+                    let conv_list = [];
+                    data = json['results'];
+                    for (c in data){
+                        console.log('json 1 = ' + c);
+                        conv_list.push({'name': data[c]['name'], 'sentence': data[c]['sentences'][1]['text']});
+                        console.log({'name': data[c]['name'], 'sentence': data[c]['sentences'][1]['text']});
+                    }
+                    return conv_list;
+                }
+            },
+            "columns": [
+                { "data": "name" },
+                { "data": "sentence" },
+            ]
+        });
 
         $("#conv_table").delegate("tr[role='row']", "click", function(){
             selected_conv = $(this).closest('tr').find('.sorting_1').text()

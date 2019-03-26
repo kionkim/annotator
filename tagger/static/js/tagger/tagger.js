@@ -21,8 +21,8 @@ $(document).ready(function() {
 	// 	.replace(/<\/?[^>]+(>|$)/g, '');
 	// console.log('conv = ' + conv);
 	conv = getInitialData();
-	console.log(conv.length)
-	conv = conv[1];
+	console.log(conv.length);
+	conv = conv[3];
 	act = JSON.parse(act.replace(/&#39;/g, '"'));
 	intent = JSON.parse(intent.replace(/&#39;/g, '"'));
 	slot = JSON.parse(slot.replace(/&#39;/g, '"'));
@@ -158,7 +158,6 @@ $(document).ready(function() {
 
 	$('#add_dialog').click(function() {
 		console.log('turn id in dialogue plus= ' + turn_id);
-		aaa = $(this);
 
 		_turn_id = parseInt(turn_id.split('_')[1]) + 1;
 		console.log('_turn_id = ' + _turn_id);
@@ -173,7 +172,6 @@ $(document).ready(function() {
 
 	$('#remove_dialog').click(function() {
 		console.log('turn id in dialogue plus= ' + turn_id);
-		aaa = $(this);
 
 		_turn_id = parseInt(turn_id.split('_')[1]) + 1;
 		console.log('_turn_id = ' + _turn_id);
@@ -286,7 +284,6 @@ function highlightSelection(tag_id) {
 			span_entity_tag.className = 'highlight entity ' + turn_id + '_seq_' + tag_id;
 			span_entity_tag.id = slot;
 			span_entity_tag.textContent = slot + ': ';
-			
 
 			// Generate span tag with entity value class
 			var span_entity_value = document.createElement('span');
@@ -298,8 +295,8 @@ function highlightSelection(tag_id) {
 			selection.deleteFromDocument();
 			range.insertNode(span_entity_value);
 			range.insertNode(span_entity_tag);
-			
-			$("span.entity").disableTextSelect();
+
+			$('span.entity').disableTextSelect();
 
 			console.log('current tag = ' + tag_id);
 			$('.messages').removeClass('selectedConv');
@@ -345,30 +342,34 @@ function generateSentBody(turn, text) {
 
 function generateReceivedBody(turn, text) {
 	body = '<div class="row msg_container base_receive">';
-	body += '<div class="col-md-2 avatar" ><img src="../../static/images/avatar.png" class=" img-responsive "></div>';
 	body +=
-		'<div class="col-md-10"><div class="messages msg_receive col-md-10" id = "turn_' +
+		'<div class="col-md-2 avatar" ><img src="../../static/images/avatar.png" class=" img-responsive "></img></div>';
+	body +=
+		'<div class="col-md-10"><div class="messages msg_receive col-md-8" id = "turn_' +
 		turn +
 		'">' +
 		'<p>' +
 		text +
 		'</p></div>';
 	body +=
-		'<div class="col-md-2"><button type="button" class="btn btn-default btn-sm" id = "add_dialog"><span class="glyphicon glyphicon-trash"></span></button>';
+		'<div class="col-md-1"><div><button type="button" class="btn btn-default btn-sm" id = "add_dialog"><span class="glyphicon glyphicon-trash"></span></button></div>';
 	body +=
-		'<button type="button" class="btn btn-default btn-sm" id = "remove_dialog"><span class="glyphicon glyphicon-trash"></span></button></div>';
+		'<div><button type="button" class="btn btn-default btn-sm" id = "remove_dialog"><span class="glyphicon glyphicon-trash">bb</span></button></div>';
 	body += '</div></div>';
+	console.log(body);
 	return body;
 }
 
-function generateEditableBody(turn, text){
+function generateEditableBody(turn, text) {
 	body = '<div class="row msg_container base_receive">';
 	body += '<div class="col-md-2 avatar" ><img src="../../static/images/avatar.png" class=" img-responsive "></div>';
 	body +=
 		'<div class="col-md-10"><div class="messages msg_receive col-md-10" id = "turn_' +
 		turn +
 		'">' +
-		'<input class = "form-control" id = "edited_' + turn + '">' +
+		'<input class = "form-control" id = "edited_' +
+		turn +
+		'">' +
 		text +
 		'</input></div>';
 	body +=
@@ -377,7 +378,6 @@ function generateEditableBody(turn, text){
 		'<button type="button" class="btn btn-default btn-sm" id = "remove_dialog"><span class="glyphicon glyphicon-trash"></span></button></div>';
 	body += '</div></div>';
 	return body;
-
 }
 
 function aggregateChat() {
