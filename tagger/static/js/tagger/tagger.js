@@ -59,85 +59,15 @@ $(document).ready(function() {
 		chat_class = selection.focusNode.parentNode.parentElement.className;
 		console.log('chat_class = ' + chat_class);
 
-		if (e2.pageX - mouseXPosition < 0) {
-			focusTag = selection.anchorNode.parentNode;
-			anchorTag = selection.focusNode.parentNode;
-		}
-		if (selectedText.length === endPoint - startPoint) {
-			highlighted = true;
-
-			if (anchorTag.className !== 'highlight') {
-				res = highlightSelection(tag_id);
-				tag_id = res[1];
-			} else {
-				var afterText =
-					selectedText + "<span class = 'highlight'>" + anchorTag.innerHTML.substr(endPoint) + '</span>';
-				anchorTag.innerHTML = anchorTag.innerHTML.substr(0, startPoint);
-				anchorTag.insertAdjacentHTML('afterend', afterText);
-			}
-		} else {
-			if (anchorTag.className !== 'highlight' && focusTag.className !== 'highlight') {
-				res = highlightSelection(tag_id);
-				tag_id = res[1];
-				highlighted = true;
-			}
-		}
-
-		if (anchorTag.className === 'highlight' && focusTag.className === 'highlight' && !highlighted) {
-			highlighted = true;
-			console.log('trigger deleting highlight');
-			var afterHtml = anchorTag.innerHTML.substr(startPoint);
-			var outerHtml = selectedText.substr(afterHtml.length, selectedText.length - endPoint - afterHtml.length);
-			var anchorInnerhtml = anchorTag.innerHTML.substr(0, startPoint);
-			var focusInnerHtml = focusTag.innerHTML.substr(endPoint);
-			var focusBeforeHtml = focusTag.innerHTML.substr(0, endPoint);
-			selection.deleteFromDocument();
-			anchorTag.innerHTML = anchorInnerhtml;
-			focusTag.innerHTml = focusInnerHtml;
-			var anchorafterHtml = afterHtml + outerHtml + focusBeforeHtml;
-			anchorTag.insertAdjacentHTML('afterend', anchorafterHtml);
-		}
-
-		if (anchorTag.className === 'highlight' && !highlighted) {
-			highlighted = true;
-			var Innerhtml = anchorTag.innerHTML.substr(0, startPoint);
-			var afterHtml = anchorTag.innerHTML.substr(startPoint);
-			var outerHtml = selectedText.substr(afterHtml.length, selectedText.length);
-			selection.deleteFromDocument();
-			anchorTag.innerHTML = Innerhtml;
-			anchorTag.insertAdjacentHTML('afterend', afterHtml + outerHtml);
-		}
-
-		if (focusTag.className === 'highlight' && !highlighted) {
-			highlighted = true;
-			var beforeHtml = focusTag.innerHTML.substr(0, endPoint);
-			var outerHtml = selectedText.substr(0, selectedText.length - beforeHtml.length);
-			selection.deleteFromDocument();
-			focusTag.innerHTml = focusTag.innerHTML.substr(endPoint);
-			outerHtml += beforeHtml;
-			focusTag.insertAdjacentHTML('beforebegin', outerHtml);
-		}
-
-		if (!highlighted) {
-			highlightSelection(tag_id);
-		}
-		$('.highlight').each(function() {
-			if ($(this).html() == '') {
-				$(this).remove();
-			}
-		});
-
-		selection.removeAllRanges();
-
-		renderConv_info(turn_id);
-
 		// Action when text is really selected
 
 		if (selectedText.length > 0) {
+			// Highlight select with necessary logic
+			highlightSelection(selection, selectedText, startPoint, endPoint, anchorTag, focusTag, turn_id, chat_class);
+			// render tagger_info panel
 			renderConv_info(turn_id);
-			//start_pos = original_dialogue[cur_turn_id] selectedText
-			//log_selection_info(mouseXPosition, mouseYPosition, selectedText, startPoint, endPoint, anchorTag, focusTag);
 
+			// Show modal
 			a = $(window).innerWidth();
 			b = $('.popup-content').innerWidth();
 
@@ -162,11 +92,11 @@ $(document).ready(function() {
 		_turn_id = parseInt(turn_id.split('_')[1]) + 1;
 		console.log('_turn_id = ' + _turn_id);
 		_html = generateEditableBody(_turn_id, '');
-		console.log('_html = ' + _html);
-
-		element = $('.selectedConv')[0].parentElement.parentElement.parentElement;
-		//console.log('element = ' + "." + element);
-		//onsole.log('element = ' + "." + element.replace(' ', '.'));
+		console.log('generated editable body html = ' + _html);
+		console.log('button parent class name = ' + $('.selectedConv').parent);
+		element = $('.selectedConv')[0].parentElement.parentElement;
+		console.log('element = ' + '.' + element);
+		console.log('element = ' + '.' + element.className);
 		$(element).append(_html);
 	});
 
@@ -179,8 +109,8 @@ $(document).ready(function() {
 		console.log('_html = ' + _html);
 
 		element = $('.selectedConv')[0].parentElement.parentElement.parentElement;
-		//console.log('element = ' + "." + element);
-		//onsole.log('element = ' + "." + element.replace(' ', '.'));
+		console.log('element = ' + '.' + element);
+		console.log('element = ' + '.' + element.replace(' ', '.'));
 		$(element).append(_html);
 	});
 
@@ -255,7 +185,134 @@ function change_slot(turn_id, tag_id, slot_text, slot_color) {
 	//log_selection_info(mouseXPosition, mouseYPosition, selectedText, startPoint, endPoint, anchorTag, focusTag);
 }
 
+function highlightSelection(selection, selectedText, startPoint, endPoint, anchorTag, focusTag, turn_id, chat_class) {
+	if (e2.pageX - mouseXPosition < 0) {
+		focusTag = selection.anchorNode.parentNode;
+		anchorTag = selection.focusNode.parentNode;
+	}
+	if (selectedText.length === endPoint - startPoint) {
+		highlighted = true;
+
+		if (anchorTag.className !== 'highlight') {
+			res = highlightSelection(tag_id);
+			tag_id = res[1];
+		} else {
+			var afterText =
+				selectedText + "<span class = 'highlight'>" + anchorTag.innerHTML.substr(endPoint) + '</span>';
+			anchorTag.innerHTML = anchorTag.innerHTML.substr(0, startPoint);
+			anchorTag.insertAdjacentHTML('afterend', afterText);
+		}
+	} else {
+		if (anchorTag.className !== 'highlight' && focusTag.className !== 'highlight') {
+			res = highlightSelection(tag_id);
+			tag_id = res[1];
+			highlighted = true;
+		}
+	}
+
+	if (anchorTag.className === 'highlight' && focusTag.className === 'highlight' && !highlighted) {
+		highlighted = true;
+		console.log('trigger deleting highlight');
+		var afterHtml = anchorTag.innerHTML.substr(startPoint);
+		var outerHtml = selectedText.substr(afterHtml.length, selectedText.length - endPoint - afterHtml.length);
+		var anchorInnerhtml = anchorTag.innerHTML.substr(0, startPoint);
+		var focusInnerHtml = focusTag.innerHTML.substr(endPoint);
+		var focusBeforeHtml = focusTag.innerHTML.substr(0, endPoint);
+		selection.deleteFromDocument();
+		anchorTag.innerHTML = anchorInnerhtml;
+		focusTag.innerHTml = focusInnerHtml;
+		var anchorafterHtml = afterHtml + outerHtml + focusBeforeHtml;
+		anchorTag.insertAdjacentHTML('afterend', anchorafterHtml);
+	}
+
+	if (anchorTag.className === 'highlight' && !highlighted) {
+		highlighted = true;
+		var Innerhtml = anchorTag.innerHTML.substr(0, startPoint);
+		var afterHtml = anchorTag.innerHTML.substr(startPoint);
+		var outerHtml = selectedText.substr(afterHtml.length, selectedText.length);
+		selection.deleteFromDocument();
+		anchorTag.innerHTML = Innerhtml;
+		anchorTag.insertAdjacentHTML('afterend', afterHtml + outerHtml);
+	}
+
+	if (focusTag.className === 'highlight' && !highlighted) {
+		highlighted = true;
+		var beforeHtml = focusTag.innerHTML.substr(0, endPoint);
+		var outerHtml = selectedText.substr(0, selectedText.length - beforeHtml.length);
+		selection.deleteFromDocument();
+		focusTag.innerHTml = focusTag.innerHTML.substr(endPoint);
+		outerHtml += beforeHtml;
+		focusTag.insertAdjacentHTML('beforebegin', outerHtml);
+	}
+
+	if (!highlighted) {
+		highlightSelection(tag_id);
+	}
+	$('.highlight').each(function() {
+		if ($(this).html() == '') {
+			$(this).remove();
+		}
+	});
+
+	selection.removeAllRanges();
+
+	renderConv_info(turn_id);
+}
+
 function highlightSelection(tag_id) {
+	var selection;
+	//Get the selected stuff
+	if (window.getSelection) selection = window.getSelection();
+	else if (typeof document.selection != 'undefined') selection = document.selection;
+
+	turn_id = selection.focusNode.parentNode.parentElement.id;
+
+	console.log('turn_id = ' + turn_id);
+	console.log('tag_id = ' + tag_id);
+	console.log('focus node = ' + selection.focusNode.parentNode);
+	console.log('selection is collapsed = ' + selection.isCollapsed);
+
+	slot = $('#slot_in_modal').find(':selected').text();
+
+	//Get a the selected content, in a range object
+	var range = selection.getRangeAt(0);
+
+	log_selection_info(mouseXPosition, mouseYPosition, selection);
+
+	//If the range spans some text, and inside a tag, set its css class.
+	if (range && !selection.isCollapsed) {
+		if (selection.anchorNode.parentNode == selection.focusNode.parentNode) {
+			tag_id += 1;
+			// Generate span tag with entity class
+			var span_entity_tag = document.createElement('span');
+			span_entity_tag.className = 'highlight entity ' + turn_id + '_seq_' + tag_id;
+			span_entity_tag.id = slot;
+			span_entity_tag.textContent = slot + ': ';
+
+			// Generate span tag with entity value class
+			var span_entity_value = document.createElement('span');
+			span_entity_value.className = 'highlight entity_value entity_' + slot + ' ' + turn_id + '_seq_' + tag_id;
+			span_entity_value.id = slot;
+			span_entity_value.textContent = selection.toString();
+
+			// Remove text and insert generated tag
+			selection.deleteFromDocument();
+			range.insertNode(span_entity_value);
+			range.insertNode(span_entity_tag);
+
+			$('span.entity').disableTextSelect();
+
+			console.log('current tag = ' + tag_id);
+			$('.messages').removeClass('selectedConv');
+			$(this).addClass('selectedConv');
+
+			turn_id = $(this).attr('id');
+		}
+	}
+	return [ turn_id, tag_id ];
+}
+
+function highlight_slot(tag_id) {
 	var selection;
 	//Get the selected stuff
 	if (window.getSelection) selection = window.getSelection();
@@ -332,6 +389,7 @@ function generateChatBody(conv, container) {
 }
 
 function generateSentBody(turn, text) {
+	console.log('adadfafafad');
 	body = '<div class="row msg_container base_sent">';
 	body += '<div class="col-md-10"><div class="messages msg_sent" id = "turn_' + turn + '"><p>' + text + '</p></div>';
 	body += '</div>';
@@ -345,16 +403,16 @@ function generateReceivedBody(turn, text) {
 	body +=
 		'<div class="col-md-2 avatar" ><img src="../../static/images/avatar.png" class=" img-responsive "></img></div>';
 	body +=
-		'<div class="col-md-10"><div class="messages msg_receive col-md-8" id = "turn_' +
+		'<div class="col-md-10"><div class="messages msg_receive col-md-10" id = "turn_' +
 		turn +
 		'">' +
 		'<p>' +
 		text +
 		'</p></div>';
 	body +=
-		'<div class="col-md-1"><div><button type="button" class="btn btn-default btn-sm" id = "add_dialog"><span class="glyphicon glyphicon-trash"></span></button></div>';
+		'<div class="col-md-2"><div><button type="button" class="btn btn-default btn-sm" id = "add_dialog"><span class="glyphicon glyphicon-trash">+</span></button></div>';
 	body +=
-		'<div><button type="button" class="btn btn-default btn-sm" id = "remove_dialog"><span class="glyphicon glyphicon-trash">bb</span></button></div>';
+		'<div><button type="button" class="btn btn-default btn-sm" id = "remove_dialog"><span class="glyphicon glyphicon-trash">-</span></button></div>';
 	body += '</div></div>';
 	console.log(body);
 	return body;
@@ -377,6 +435,7 @@ function generateEditableBody(turn, text) {
 	body +=
 		'<button type="button" class="btn btn-default btn-sm" id = "remove_dialog"><span class="glyphicon glyphicon-trash"></span></button></div>';
 	body += '</div></div>';
+	console.log('generatedEditableBody = ' + body);
 	return body;
 }
 
