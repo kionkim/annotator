@@ -92,7 +92,7 @@ def user_login(request):
         return render(request, 'tagger/login.html')
 
 @login_required
-def show_tagger(request):
+def show_conv_tagger(request):
     import json
     if request.method == 'POST':
         post_id = request.POST['post_id']
@@ -120,7 +120,40 @@ def show_tagger(request):
     print(slot)
 
     #Need to turn conv in json format
-    return render(request, 'tagger/tagging_page.html', \
+    return render(request, 'tagger/conv_tagger.html', \
+                  {'conv': '', 'act': act, 'slot': slot, 'intent': intent})
+
+
+@login_required
+def show_conv_generator(request):
+    import json
+    if request.method == 'POST':
+        post_id = request.POST['post_id']
+        
+    elif request.method == 'GET':
+        # post_id = request.GET.get('post_id')
+
+        # with open('tagger/static/data/conv_1.json', 'r') as f:
+        #     conv =  f.read()
+        # print('post id = {}'.format(post_id))
+        # conv_json = json.loads(conv.replace("'", '')) # json.loads에서는 '과 "이 같이 나오면 순서를 바꿔버림
+        
+        # print(conv_json[0]['name'])
+        # selected_conv = [x for x in conv_json if x['name'] == post_id][0]
+
+        # Temporary
+        pass
+
+    act = ['inform', 'ack', 'introduce', 'notify_success', \
+           'request', 'confirm', 'affirm', 'thank', 'bye', 'offer' ]
+    intent = ['선물', '리필']
+    slot = [{'service_type': '(178, 212, 245)'}, {'coupon': '(252, 195, 167)'}, \
+            {'data': '(143, 208, 187)'}, {'calling': '(211, 189, 235)'}, \
+            {'date': '(154, 159, 249)'}, {'subscription': '(252, 202, 202)'}]
+    print(slot)
+
+    #Need to turn conv in json format
+    return render(request, 'tagger/conv_generator.html', \
                   {'conv': '', 'act': act, 'slot': slot, 'intent': intent})
 
 

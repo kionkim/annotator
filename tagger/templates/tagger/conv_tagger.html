@@ -1,0 +1,109 @@
+{% extends "tagger/base.html" %}
+{% block body_block %}
+<link rel="stylesheet" href="../../static/css/base/bootstrap.min.css">
+<link rel="stylesheet" href="../../static/css/tagger/tagger.css">
+<script type="text/javascript" src="../../static/js/base/jquery.min.js"></script>
+<script type="text/javascript" src="../../static/js/tagger/tagger.js"></script>  
+<script type="text/javascript" src="../../static/js/base/bootstrap.min.js"></script>
+<script type="text/javascript">
+    var conv = '{{ conv }}';
+    var act = '{{ act }}';
+    var intent = '{{ intent }}';
+    var slot = '{{ slot }}';
+</script>
+
+
+<!------ Include the above in your HEAD tag ---------->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="chatbody">
+                <div class="panel panel-primary">
+                    <div class="panel-heading top-bar">
+                        <div class="col-md-8">
+                            <h3 class="panel-title chat_head"></h3>
+                        </div>
+                    </div>
+                    <div class="panel-body msg_container_base">
+                    </div>
+                    <div class="panel-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading top-bar">
+                    <div class="col-md-8">
+                        <h3 class="panel-title"><span class="glyphicon glyphicon-book"></span> Tagging info</h3>
+                    </div>
+                </div>
+                <div>
+                    <form class = 'tagger_form'>
+                        <div class="form-group">
+                            <label for="turn_id_input">Turn ID</label>
+                            <input class="form-control" id="turn_id_input"></input>
+                        </div>
+                        <div class="form-group"> 
+                            <label for="intent_input">문장 Intent</label>
+                            <select class="form-control" id="sentence_intent_input"></select>
+                        </div> 
+                        <div class="form-group">
+                            <label for="acts_input">Act</label>
+                            <select class="form-control" id="act_input"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="slots_input">Slots</label>
+                            <div class='col-md-6 slot_list' id = "slots_input"></div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">저장</button>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id = 'slot_selector'>
+        <!--Creates the popup content-->
+        <div class="modal-dialog">
+            <div class="modal-content popup-content">
+            <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Select slot</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  </div>
+                  <!-- Modal body -->
+                  <div class="modal-body">
+                      <form>
+                          <div class="form-group">
+                            <button type="button" class="btn btn-danger" id = "delete_selection" >Delete</button>
+                          </div>
+                          <div class="form-group">
+                              <label for="slot">Slot</label>
+                          </div>
+                          <div class="form-group" >
+                              <select id="slot_in_modal"></select>
+                          </div>
+                          <div class="form-group">
+                              <label for="value_in_modal">Value</label>
+                          </div>
+                          <div class="form-group">
+                              <input id='value'></input>
+                          </div>
+                      </form>
+                  </div>
+            
+                  <!-- Modal footer -->
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                  </div>     
+                </div>
+              </div>
+    </div>
+</div>
+
+
+{% endblock %}

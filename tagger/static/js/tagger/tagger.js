@@ -97,7 +97,7 @@ $(document).ready(function() {
 		console.log('turn id in dialogue plus= ' + turn_id);
 		element = $(this)[0].parentElement.parentElement;
 		tmp = element;
-		_turn_id = parseInt(_turn_id.split('_')[1]) + 1;
+		_turn_id = parseInt($(element).find('.messages')[0].id.split('_')[1]) + 1;
 		console.log('_turn_id = ' + _turn_id);
 
 		//console.log('button parent class name = ' + $('.selectedConv').parent);
@@ -140,7 +140,7 @@ $(document).ready(function() {
 		if (window.getSelection().toString() != '') {
 			selectedText = window.getSelection().toString();
 			var text1 = $('.selectedConv').text().split('');
-			console.log('text1 = ' + text1);
+			console.log('original text = ' + text1);
 			pointStart = window.getSelection().anchorOffset;
 			pointEnd = window.getSelection().focusOffset;
 
@@ -149,13 +149,13 @@ $(document).ready(function() {
 			}
 			text1.splice(pointStart, selectedText.length);
 			text1 = text1.join('');
-			console.log('text 2= ' + text1);
+			console.log('modified text = ' + text1);
 			selectedFullText = text1;
 		} else {
 			selectedText = $('.selectedConv').text();
 			var text1 = '';
 		}
-		$('.selectedConv').text(text1);
+		$('.selectedConv').html('<p>' + text1 + '</p>');
 	});
 
 	$('#slot_in_modal').change(function(e) {
