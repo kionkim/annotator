@@ -145,6 +145,9 @@ $(document).ready(function() {
 		text = $(element, $('p')).text();
 
 		tmp = element;
+		console.log('sent text = ' + text);
+		console.log('sent lass name = ' + $(element, $('.messages'))[0].className);
+		console.log('sent message type = ' + $(element, $('.messages'))[0].className.includes('receive'));
 		if ($(element, $('.messages'))[0].className.includes('receive')) {
 			_html = generateReceivedEditableBody(_turn_id, '');
 		} else {
@@ -161,7 +164,6 @@ $(document).ready(function() {
 
 		$('.messages').removeClass('selectedConv');
 		text = $(element, $('p')).text();
-		tmp = element;
 		if ($(element, $('.messages'))[0].className.includes('receive')) {
 			_html = generateReceivedEditableBody(_turn_id, '');
 		} else {
@@ -200,9 +202,9 @@ $(document).ready(function() {
 		}
 		_html = '<p>' + modified_text + '</p>';
 		_html +=
-			'<button type="button" class="btn btn-default btn-sm add_editable_dialog"><span class="glyphicon glyphicon-plus"</span></button>';
+			'<button type="button" class="btn btn-default btn-sm add_editable_dialog"><span class="glyphicon glyphicon-plus add"</span></button>';
 		_html +=
-			'<button type="button" class="btn btn-default btn-sm rm_editable_dialog"><span class="glyphicon glyphicon-remove"></span></button>';
+			'<button type="button" class="btn btn-default btn-sm rm_editable_dialog"><span class="glyphicon glyphicon-remove remove"></span></button>';
 		$('.selectedConv').html(_html);
 	});
 
@@ -227,9 +229,9 @@ $(document).ready(function() {
 		input.remove();
 		_html = '<p>' + text + '</p>';
 		_html +=
-			'<button type="button" class="btn btn-default btn-sm add_editable_dialog"><span class="glyphicon glyphicon-plus"</span></button>';
+			'<button type="button" class="btn btn-default btn-sm add_editable_dialog"><span class="glyphicon glyphicon-plus add"</span></button>';
 		_html +=
-			'<button type="button" class="btn btn-default btn-sm rm_editable_dialog"><span class="glyphicon glyphicon-remove"></span></button>';
+			'<button type="button" class="btn btn-default btn-sm rm_editable_dialog"><span class="glyphicon glyphicon-remove remove"></span></button>';
 		element.innerHTML = _html;
 	});
 
@@ -239,6 +241,25 @@ $(document).ready(function() {
 
 	$('.edited_input').on('input', function(e) {
 		alert('Changed!');
+	});
+
+	$('#submit').click(function() {
+		console.log('aggregate');
+		res = aggregateChat();
+	});
+
+	$('.add_slot').click(function() {
+		console.log('triggered add_slot');
+		_html = '<div class="col-md-3 col-md-offset-1"><label for="slot_input"><p>New slot</p></label></div>';
+		_html += '<div class="col-md-3"><input class="form-control"></input></div>';
+		_html +=
+			'<div class="col-md-1"><button type="button" class="btn btn-default btn-sm add_slot"><span class="glyphicon glyphicon-ok ok"></span></button></div>';
+		var child = document.createElement('div');
+		child.className = 'row';
+		child.innerHTML = _html;
+		child.style.cssText = '{background:red;}';
+		tmp = $(this);
+		$(this)[0].parentElement.parentElement.appendChild(child);
 	});
 
 	$.fn.removeClassRegExp = function(regexp) {
@@ -309,6 +330,7 @@ $(document).ready(function() {
 	});
 
 	$(document).on('long-press', '.editable_messages', function(e) {
+		console.log('long-press on new message triggered');
 		element = $(this)[0].parentElement.parentElement.parentElement;
 		e.preventDefault();
 		// Show modal
@@ -450,8 +472,6 @@ function work_on_selection(e, selection, selectedText, startPoint, endPoint, anc
 	});
 
 	selection.removeAllRanges();
-
-	renderConv_info(turn_id);
 }
 
 function turn_into_slot() {
@@ -483,32 +503,41 @@ function turn_into_slot() {
 			end_point: end_point
 		});
 		log_selection_info(mouseXPosition, mouseYPosition, selection);
-	}
+		//If the range spans some text, and inside a tag, set its css class.
+		if (range && !selection.isCollapsed) {
+			if (selection.anchorNode.parentNode == selection.focusNode.parentNode) {
+				// Generate span tag with entity class
+				var span_entity_tag = document.createElement('span');
+				span_entity_tag.className = 'highlight entity ' + turn_id + '_seq_' + tag_id;
+				span_entity_tag.id = slot;
+				span_entity_tag.textContent = slot + ': ';
 
-	//If the range spans some text, and inside a tag, set its css class.
-	if (range && !selection.isCollapsed) {
-		if (selection.anchorNode.parentNode == selection.focusNode.parentNode) {
-			// Generate span tag with entity class
-			var span_entity_tag = document.createElement('span');
-			span_entity_tag.className = 'highlight entity ' + turn_id + '_seq_' + tag_id;
-			span_entity_tag.id = slot;
-			span_entity_tag.textContent = slot + ': ';
+				// Generate span tag with entity value class
+				var span_entity_value = document.createElement('span');
+				span_entity_value.className =
+					'highlight entity_value entity_' +
+					slot +
+					' ' +
+					turn_id +
+					'_seq_' +
+					tag_id +
+					' start_' +
+					start_point +
+					' end_' +
+					end_point;
+				span_entity_value.id = slot;
+				span_entity_value.textContent = selection.toString();
 
-			// Generate span tag with entity value class
-			var span_entity_value = document.createElement('span');
-			span_entity_value.className = 'highlight entity_value entity_' + slot + ' ' + turn_id + '_seq_' + tag_id;
-			span_entity_value.id = slot;
-			span_entity_value.textContent = selection.toString();
+				// Remove text and insert generated tag
+				selection.deleteFromDocument();
+				range.insertNode(span_entity_value);
+				range.insertNode(span_entity_tag);
 
-			// Remove text and insert generated tag
-			selection.deleteFromDocument();
-			range.insertNode(span_entity_value);
-			range.insertNode(span_entity_tag);
+				$('span.entity').disableTextSelect();
 
-			$('span.entity').disableTextSelect();
-
-			turn_id = $(this).attr('id');
-			tag_id += 1;
+				turn_id = $(this).attr('id');
+				tag_id += 1;
+			}
 		}
 	}
 }
@@ -546,9 +575,9 @@ function generateSentBody(turn, text) {
 		text +
 		'</p>';
 	body +=
-		'<button type="button" class="btn btn-default btn-sm add_dialog"><span class="glyphicon glyphicon-plus"></span></button>';
+		'<button type="button" class="btn btn-default btn-sm add_dialog"><span class="glyphicon glyphicon-plus add"></span></button>';
 	body +=
-		'<button type="button" class="btn btn-default btn-sm remove_dialog"><span class="glyphicon glyphicon-remove"></span></button>';
+		'<button type="button" class="btn btn-default btn-sm remove_dialog"><span class="glyphicon glyphicon-remove remove remove"></span></button>';
 	body += '</div></div>';
 	body += '<div class="col-md-2 avatar"><img src="../../static/images/ryan.png" class=" img-responsive "></div>';
 	body += '</div>';
@@ -567,9 +596,9 @@ function generateReceivedBody(turn, text) {
 		text +
 		'</p>';
 	body +=
-		'<button type="button" class="btn btn-default btn-sm add_dialog"><span class="glyphicon glyphicon-plus"></span></button>';
+		'<button type="button" class="btn btn-default btn-sm add_dialog"><span class="glyphicon glyphicon-plus add"></span></button>';
 	body +=
-		'<button type="button" class="btn btn-default btn-sm remove_dialog"><span class="glyphicon glyphicon-remove"></span></button>';
+		'<button type="button" class="btn btn-default btn-sm remove_dialog"><span class="glyphicon glyphicon-remove remove"></span></button>';
 	body += '</div></div></div>';
 	return body;
 }
@@ -577,18 +606,18 @@ function generateReceivedEditableBody(turn, text) {
 	body = '<div class="row msg_container base_receive">';
 	body += '<div class="col-md-2 avatar" ><img src="../../static/images/ryan.png" class=" img-responsive "></div>';
 	body +=
-		'<div class="col-md-10"><div class="messages editable_messages selectedConv msg_receive" id = "turn_' +
+		'<div class="col-md-10"><div class="messages editable_messages selectedConv msg_receive col-md-10 data-long-press-delay="200"" id = "turn_' +
 		turn +
 		'">' +
-		'<input class = "form-control  edited_input" type = "text" id = "edited_' +
+		'<input class = "form-control edited_input" type = "text" id = "edited_' +
 		turn +
 		'" value = "' +
 		text +
 		'"></input>';
 	body +=
-		'<button type="button" class="btn btn-default btn-sm confirm_generated_text"><span class="glyphicon glyphicon-ok"></span></button>';
+		'<button type="button" class="btn btn-default btn-sm confirm_generated_text"><span class="glyphicon glyphicon-ok ok"></span></button>';
 	body +=
-		'<button type="button" class="btn btn-default btn-sm add_editable_dialog"><span class="glyphicon glyphicon-plus"></span></button>';
+		'<button type="button" class="btn btn-default btn-sm add_editable_dialog"><span class="glyphicon glyphicon-plus add"></span></button>';
 	body +=
 		'<button type="button" class="btn btn-default btn-sm rm_editable_dialog"><span class="glyphicon glyphicon-remove"></span></button>';
 
@@ -598,9 +627,9 @@ function generateReceivedEditableBody(turn, text) {
 }
 
 function generateSentEditableBody(turn, text) {
-	body = '<div class="row msg_container base_receive">';
+	body = '<div class="row msg_container base_sent">';
 	body +=
-		'<div class="col-md-10"><div class="messages editable_messages selectedConv msg_receive" id = "turn_' +
+		'<div class="col-md-10"><div class="messages editable_messages selectedConv msg_sent data-long-press-delay="200" id = "turn_' +
 		turn +
 		'">' +
 		'<input class = "form-control  edited_input" type = "text" id = "edited_' +
@@ -609,21 +638,31 @@ function generateSentEditableBody(turn, text) {
 		text +
 		'"></input>';
 	body +=
-		'<button type="button" class="btn btn-default btn-sm confirm_generated_text"><span class="glyphicon glyphicon-ok"></span></button>';
+		'<button type="button" class="btn btn-default btn-sm confirm_generated_text"><span class="glyphicon glyphicon-ok ok"></span></button>';
 	body +=
-		'<button type="button" class="btn btn-default btn-sm add_editible_dialog"><span class="glyphicon glyphicon-plus"></span></button>';
+		'<button type="button" class="btn btn-default btn-sm add_editible_dialog"><span class="glyphicon glyphicon-plus add"></span></button>';
 	body +=
-		'<button type="button" class="btn btn-default btn-sm rm_editible_dialog"><span class="glyphicon glyphicon-remove"></span></button>';
-	body += '</div>';
+		'<button type="button" class="btn btn-default btn-sm rm_editible_dialog"><span class="glyphicon glyphicon-remove remove"></span></button>';
+	body += '</div></div>';
 	body += '<div class="col-md-2 avatar" ><img src="../../static/images/ryan.png" class=" img-responsive "></div>';
 
-	body += '</div></div>';
+	body += '</div>';
 
 	return body;
 }
 
 function aggregateChat() {
-	$$('.messages').each();
+	console.log('aggregateChat triggered');
+	$('.messages').each(function() {
+		elem = $(this)[0];
+		$(this).find('.entity_value').each(function(i, c) {
+			console.log('i = ' + i + '   c = ' + c.className);
+			_ent = c.className.split(' ');
+			$.each(_ent, function(v, j) {
+				console.log('v = ' + v + 'j = ' + j);
+			});
+		});
+	});
 }
 
 function getInitialData() {
