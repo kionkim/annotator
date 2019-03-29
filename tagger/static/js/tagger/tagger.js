@@ -56,8 +56,8 @@ $(document).ready(function() {
 		selection = window.getSelection();
 		selectedText = selection.toString();
 
-		startPoint = window.getSelection().getRangeAt(0).startOffset;
-		endPoint = window.getSelection().getRangeAt(0).endOffset;
+		startPoint = selection.getRangeAt(0).startOffset;
+		endPoint = selection.getRangeAt(0).endOffset;
 		anchorTag = selection.anchorNode.parentNode;
 		focusTag = selection.focusNode.parentNode;
 		selectedFullText = anchorTag.textContent;
@@ -65,7 +65,55 @@ $(document).ready(function() {
 		turn_id = anchorTag.parentElement.id;
 		chat_class = selection.focusNode.parentNode.parentElement.className;
 		console.log('chat_class = ' + chat_class);
-		console.log('e2.pageX' + e2.pageX);
+
+		// Action when text is really selected
+
+		if (selectedText.length > 0) {
+			console.log('Action when text is really selected');
+			// Highlight select with necessary logic
+			renderConv_info(turn_id);
+
+			// Show modal
+			a = $(window).innerWidth();
+			b = $('.popup-content').innerWidth();
+			c = $(window).innerHeight();
+			d = $('.popup-content').innerHeight();
+			console.log('c = ' + c);
+			console.log('d = ' + d);
+			$('.modal').css({
+				left: Math.min(mouseXPosition - 390, a - b),
+				top: Math.min(mouseYPosition, c / 2)
+			});
+
+			$('#slot_selector').modal('show');
+
+			$('#value').val(selectedText);
+
+			$('.messages').removeClass('selectedConv');
+			$(this).addClass('selectedConv');
+			selectedElement = $(this);
+		}
+	});
+
+	$(document).on('mousedown', '.messages', function(e1) {
+		mouseXPosition = e1.pageX; //register the mouse down position
+		mouseYPosition = e1.pageY; //register the mouse down position
+	});
+
+	// Highlight when text selected
+	$(document).on('mouseup', '.editable_messages', function(e2) {
+		var highlighted = false;
+		selection = window.getSelection();
+		selectedText = selection.toString();
+
+		startPoint = selection.getRangeAt(0).startOffset;
+		endPoint = selection.getRangeAt(0).endOffset;
+		anchorTag = selection.anchorNode.parentNode;
+		focusTag = selection.focusNode.parentNode;
+		selectedFullText = anchorTag.textContent;
+		console.log('selected conv = ' + selectedFullText);
+		turn_id = anchorTag.parentElement.id;
+		chat_class = selection.focusNode.parentNode.parentElement.className;
 		// Action when text is really selected
 
 		if (selectedText.length > 0) {
@@ -94,55 +142,55 @@ $(document).ready(function() {
 	});
 
 	$('.add_dialog').click(function() {
-		console.log('turn id in dialogue plus= ' + turn_id);
-		element = $(this)[0].parentElement.parentElement;
-		tmp = element;
+		element = $(this)[0].parentElement.parentElement.parentElement;
+		_turn_id = $(element).find('.messages')[0].id;
 		_turn_id = parseInt(_turn_id.split('_')[1]) + 1;
-		console.log('_turn_id = ' + _turn_id);
-
-		//console.log('button parent class name = ' + $('.selectedConv').parent);
-
-		element = $(this)[0].parentElement.parentElement;
-		console.log('element = ' + '.' + element.className);
 		$('.messages').removeClass('selectedConv');
-		tmp = element;
 		text = $(element, $('p')).text();
 
+		tmp = element;
 		if ($(element, $('.messages'))[0].className.includes('receive')) {
-			party = 'receive';
 			_html = generateReceivedEditableBody(_turn_id, '');
 		} else {
-			party = 'sent';
-			_html = generateSentEditableSentBody(_turn_id, '');
+			_html = generateSentEditableBody(_turn_id, '');
 		}
-		console.log('party = ' + party);
+		$(element).after(_html);
+	});
 
-		console.log('_html = ' + _html);
+	$(document).on('click', '.add_editable_dialog', function() {
+		element = $(this)[0].parentElement.parentElement.parentElement;
+		_turn_id = $(element).find('.messages')[0].id;
+		_turn_id = parseInt(_turn_id.split('_')[1]) + 1;
+
+		$('.messages').removeClass('selectedConv');
+		text = $(element, $('p')).text();
 		tmp = element;
+		if ($(element, $('.messages'))[0].className.includes('receive')) {
+			_html = generateReceivedEditableBody(_turn_id, '');
+		} else {
+			_html = generateSentEditableBody(_turn_id, '');
+		}
 		$(element).after(_html);
 	});
 
 	$('.remove_dialog').click(function() {
-		//console.log('turn id in dialogue plus= ' + turn_id);
-		element = $(this)[0].parentElement.parentElement;
+		element = $(this)[0].parentElement.parentElement.parentElement;
 		element.remove();
 	});
 
-	$('.remove_dialog_editable_dialogue').click(function() {
-		console.log('turn id in dialogue plus= ' + turn_id);
-		element = $(this)[0].parentElement.parentElement;
-		tmp = element;
+	$(document).on('click', '.rm_editable_dialog', function() {
+		element = $(this)[0].parentElement.parentElement.parentElement;
 		element.remove();
 	});
 
 	$('#delete_selection').click(function() {
 		selectedFullText;
-		if (window.getSelection().toString() != '') {
-			selectedText = window.getSelection().toString();
-			var text1 = $('.selectedConv').text().split('');
+		if (selection.toString() != '') {
+			selectedText = selection.toString();
+			var text1 = $('selectedConv').text().split('');
 			console.log('text1 = ' + text1);
-			pointStart = window.getSelection().anchorOffset;
-			pointEnd = window.getSelection().focusOffset;
+			pointStart = selection.anchorOffset;
+			pointEnd = selection.focusOffset;
 
 			if (pointEnd < pointStart) {
 				pointStart = pointEnd;
@@ -158,31 +206,41 @@ $(document).ready(function() {
 		$('.selectedConv').text(text1);
 	});
 
-	$('#slot_in_modal').change(function(e) {
+	$('#slot_in_modal').on('click change', function(e) {
 		work_on_selection(e, selection, selectedText, startPoint, endPoint, anchorTag, focusTag, turn_id, tag_id);
 		// render tagger_info panel
 		slot_color = $(this).val();
 		slot_text = $('#slot_in_modal option:selected').text();
-		//console.log('turn_id in change slot = ' + turn_id);
-		//console.log('tag_id in change slot = ' + tag_id);
-		change_slot(turn_id, tag_id, slot_text, slot_color);
+		change_slot(turn_id, tag_id, slot_text);
 		$('#slots_input').append(
 			'<span class="badge badge-secondary ' + turn_id + '_in_modal>' + slot_text + '</span>'
 		);
 	});
 
 	// Binding event on dynamically generated editable dialogue
-	$(document).on('click', '#confirm_generated_text', function() {
+	$(document).on('click', '.confirm_generated_text', function() {
 		console.log('confirm_generated_text');
+		element = $(this)[0].parentElement;
+		input = $(element).find('.edited_input')[0];
+		text = input.value;
+		tmp = element;
+		original_dialogue[element.id] = text;
+
+		console.log('text = ' + text);
+		input.remove();
+
+		_html = '<p>' + text + '</p>';
+		_html +=
+			'<button type="button" class="btn btn-default btn-sm add_editable_dialog"><span class="glyphicon glyphicon-trash">+</span></button>';
+		_html +=
+			'<button type="button" class="btn btn-default btn-sm rm_editable_dialog"><span class="glyphicon glyphicon-trash">-</span></button>';
+		console.log('_html = ' + _html);
+		element.innerHTML = _html;
+		console.log('text = ' + text);
 	});
 
-	$(document).on('click', '.remove_dialog_editable_dialogue', function() {
-		console.log('remove_dialog_editable_dialogue');
+	$(document).on('click', '.rm_editable_dialog', function() {
 		$(this).parent().parent().parent().remove();
-	});
-
-	$('#confirm_generated_text').click(function() {
-		console.log('confirm_generated_text');
 	});
 
 	$('.edited_input').on('input', function(e) {
@@ -234,7 +292,7 @@ $(document).ready(function() {
 	};
 });
 
-function change_slot(turn_id, tag_id, slot_text, slot_color) {
+function change_slot(turn_id, tag_id, slot_text) {
 	console.log('slot_text in change_slot = ' + slot_text);
 	console.log('span.entity.' + turn_id + '_seq_' + tag_id);
 	console.log('cur tag = ' + tag_id);
@@ -245,11 +303,9 @@ function change_slot(turn_id, tag_id, slot_text, slot_color) {
 		.addClass('entity_value')
 		.addClass('entity_' + slot_text)
 		.addClass(turn_id + '_seq_' + tag_id);
-	//log_selection_info(mouseXPosition, mouseYPosition, selectedText, startPoint, endPoint, anchorTag, focusTag);
 }
 
 function work_on_selection(e, selection, selectedText, startPoint, endPoint, anchorTag, focusTag, turn_id, tag_id) {
-	console.log('e2.pageX - mouseXPosition = ' + (e.pageX - mouseXPosition));
 	// if (e2.pageX - mouseXPosition < 0) {
 	// 	focusTag = selection.anchorNode.parentNode;
 	// 	anchorTag = selection.focusNode.parentNode;
@@ -260,17 +316,14 @@ function work_on_selection(e, selection, selectedText, startPoint, endPoint, anc
 	console.log('Starting point = ' + startPoint);
 	console.log('End point = ' + endPoint);
 	console.log('Selected text = ' + selectedText);
-	console.log('inside spane = ' + anchorTag.innerHTML.substr(endPoint));
+	console.log('inside span = ' + anchorTag.innerHTML.substr(endPoint));
 	console.log('endPoint - startPoint = ' + (endPoint - startPoint));
 	if (selectedText.length === endPoint - startPoint) {
-		console.log('entered if at 213');
 		highlighted = true;
 
 		if (anchorTag.className !== 'highlight') {
-			console.log('entered if at 217');
 			turn_into_slot();
 		} else {
-			console.log('entered else at 221');
 			var afterText =
 				selectedText + "<span class = 'highlight'>" + anchorTag.innerHTML.substr(endPoint) + '</span>';
 			anchorTag.innerHTML = anchorTag.innerHTML.substr(0, startPoint);
@@ -334,11 +387,12 @@ function work_on_selection(e, selection, selectedText, startPoint, endPoint, anc
 }
 
 function turn_into_slot() {
-	var selection;
-	//Get the selected stuff
-	if (window.getSelection) selection = window.getSelection();
-	else if (typeof document.selection != 'undefined') selection = document.selection;
-
+	// var selection = $('.selectedConv')[0];
+	// tmp = $('.selectedConv')[0];
+	// //Get the selected stuff
+	// if (window.getSelection) selection = window.getSelection();
+	// else if (typeof document.selection != 'undefined') selection = document.selection;
+	console.log('selection = ' + selection.toString());
 	turn_id = selection.focusNode.parentNode.parentElement.id;
 
 	console.log('turn_id = ' + turn_id);
@@ -389,9 +443,9 @@ function turn_into_slot() {
 
 			$('span.entity').disableTextSelect();
 
-			console.log('current tag = ' + tag_id);
-			$('.messages').removeClass('selectedConv');
-			$(this).addClass('selectedConv');
+			// console.log('current tag = ' + tag_id);
+			// $('.messages').removeClass('selectedConv');
+			// $(this).addClass('selectedConv');
 
 			turn_id = $(this).attr('id');
 			tag_id += 1;
@@ -425,12 +479,12 @@ function generateChatBody(conv, container) {
 function generateSentBody(turn, text) {
 	body = '<div class="row msg_container base_sent">';
 	body += '<div class="col-md-10">';
-	body += '<div class="messages msg_sent col-md-10" id = "turn_' + turn + '"><p>' + text + '</p></div>';
+	body += '<div class="messages msg_sent col-md-10" id = "turn_' + turn + '"><p>' + text + '</p>';
 	body +=
 		'<button type="button" class="btn btn-default btn-sm add_dialog"><span class="glyphicon glyphicon-trash">+</span></button>';
 	body +=
 		'<button type="button" class="btn btn-default btn-sm remove_dialog"><span class="glyphicon glyphicon-trash">-</span></button>';
-	body += '</div>';
+	body += '</div></div>';
 	body += '<div class="col-md-2 avatar"><img src="../../static/images/avatar.png" class=" img-responsive "></div>';
 	body += '</div>';
 	return body;
@@ -446,12 +500,12 @@ function generateReceivedBody(turn, text) {
 		'">' +
 		'<p>' +
 		text +
-		'</p></div>';
+		'</p>';
 	body +=
 		'<button type="button" class="btn btn-default btn-sm add_dialog"><span class="glyphicon glyphicon-trash">+</span></button>';
 	body +=
 		'<button type="button" class="btn btn-default btn-sm remove_dialog"><span class="glyphicon glyphicon-trash">-</span></button>';
-	body += '</div></div>';
+	body += '</div></div></div>';
 	//console.log(body);
 	return body;
 }
@@ -459,39 +513,43 @@ function generateReceivedEditableBody(turn, text) {
 	body = '<div class="row msg_container base_receive">';
 	body += '<div class="col-md-2 avatar" ><img src="../../static/images/avatar.png" class=" img-responsive "></div>';
 	body +=
-		'<div class="col-md-10"><div class="messages selectedConv msg_receive" id = "turn_' +
+		'<div class="col-md-10"><div class="messages editable_messages selectedConv msg_receive" id = "turn_' +
 		turn +
 		'">' +
 		'<input class = "form-control  edited_input" type = "text" id = "edited_' +
 		turn +
-		'" + value = "' +
+		'" value = "' +
 		text +
-		'"></input></div>';
+		'"></input>';
 	body +=
-		'<div class="col-md-2"><button type="button" class="btn btn-default btn-sm" id = "confirm_generated_text"><span class="glyphicon glyphicon-trash">OK</span></button>';
+		'<button type="button" class="btn btn-default btn-sm confirm_generated_text"><span class="glyphicon glyphicon-trash">OK</span></button>';
 	body +=
-		'<button type="button" class="btn btn-default btn-sm remove_dialog_editable_dialogue"><span class="glyphicon glyphicon-trash">-</span></button></div>';
+		'<button type="button" class="btn btn-default btn-sm add_editable_dialog"><span class="glyphicon glyphicon-trash">+</span></button>';
+	body +=
+		'<button type="button" class="btn btn-default btn-sm rm_editable_dialog"><span class="glyphicon glyphicon-trash">-</span></button>';
 
-	body += '</div></div>';
+	body += '</div></div></div>';
 
 	return body;
 }
 
-function generateSentEditableSentBody(turn, text) {
+function generateSentEditableBody(turn, text) {
 	body = '<div class="row msg_container base_receive">';
 	body +=
-		'<div class="col-md-10"><div class="messages selectedConv msg_receive" id = "turn_' +
+		'<div class="col-md-10"><div class="messages editable_messages selectedConv msg_receive" id = "turn_' +
 		turn +
 		'">' +
 		'<input class = "form-control  edited_input" type = "text" id = "edited_' +
 		turn +
 		'" + value = "' +
 		text +
-		'"></input></div>';
+		'"></input>';
 	body +=
-		'<button type="button" class="btn btn-default btn-sm" id = "confirm_generated_text"><span class="glyphicon glyphicon-trash">OK</span></button>';
+		'<button type="button" class="btn btn-default btn-sm confirm_generated_text"><span class="glyphicon glyphicon-trash">OK</span></button>';
 	body +=
-		'<button type="button" class="btn btn-default btn-sm remove_dialog_editable_dialogue"><span class="glyphicon glyphicon-trash">-</span></button>';
+		'<button type="button" class="btn btn-default btn-sm add_editible_dialog"><span class="glyphicon glyphicon-trash">+</span></button>';
+	body +=
+		'<button type="button" class="btn btn-default btn-sm rm_editible_dialog"><span class="glyphicon glyphicon-trash">-</span></button>';
 	body += '</div>';
 	body += '<div class="col-md-2 avatar" ><img src="../../static/images/avatar.png" class=" img-responsive "></div>';
 
