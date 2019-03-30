@@ -173,6 +173,11 @@ $(document).ready(function() {
 		$(this).attr('disabled', true);
 	});
 
+	$(document).on('click', '.editable_messages', function() {
+		$('.messages').removeClass('selectedConv');
+		$(this).addClass('selectedConv');
+	});
+
 	$('.remove_dialog').click(function() {
 		element = $(this)[0].parentElement.parentElement.parentElement;
 		element.remove();
