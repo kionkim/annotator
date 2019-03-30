@@ -1,6 +1,6 @@
 {% extends "tagger/base.html" %}
-{% block script %}
 
+{% block script %}
 <script src="../../static/js/table/jquery.dataTables.min.js" type="text/javascript"></script>
 <script src="../../static/js/table/dataTables.bootstrap4.min.js" type="text/javascript"></script>
 {% endblock %}
@@ -44,7 +44,7 @@
             
             $.ajax({
                 type: 'POST',
-                url: "{% url 'tagger:conv_tag' %}",
+                url: "{% url 'tagger:conv_tagger' %}",
                 data: {
                     'post_id': selected_conv,
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
