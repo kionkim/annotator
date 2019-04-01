@@ -1,0 +1,23 @@
+ ## Requirements
+ 
+ pip3 install django-cors-headers
+ pip3 install Pillow
+
+
+ ## Note
+
+ - HTML Tag는 없다고 가정
+ - HTML 내부만 드래그 했을 때는 선택이 되지 않음
+ - HTML을 거쳐서 드래그 했을 때도 선택이 되지 않음
+
+## Global variable의
+ - TMP는 debug용
+ - original_text는 refresh했을 때 사용
+ - turn_id는 global variable일 필요는 없음. 제거 중
+ - tag_id는 global 변수로 두는 게 좋을 듯
+ - selectedText는 실제 드래그된 텍스트로, 전역변수로 둬도 나쁘지 않을 듯
+
+## 사용 제약
+  - 대화를 한번 눌러 반전되었을 때 태깅이 가능
+  - 대화 선택없이 바로 드래그하면, 태깅창이 뜨지 않음
+  - 드래그 한 후에 화면의 다른 곳을 클릭하면, selection이 사라지면서 태깅이 되지 않음

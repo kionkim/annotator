@@ -1,10 +1,9 @@
 var selectedText;
-var selectedElement;
 var tag_id = 0;
 var turn_id;
-var tmp;
-var original_dialogue;
-var slot_info = [];
+var tmp; // For debugging
+var original_dialogue; // To reload data
+// var slot_info = [];
 $(document).ready(function() {
 	var start_pos;
 	var end_pos;
@@ -53,15 +52,20 @@ $(document).ready(function() {
 	// Highlight when text selected
 	$('.messages').mouseup(function(e2) {
 		var highlighted = false;
+		selectedText = '';
 		selection = window.getSelection();
-		selectedText = selection.toString();
-
-		startPoint = selection.getRangeAt(0).startOffset;
-		endPoint = selection.getRangeAt(0).endOffset;
 		anchorTag = selection.anchorNode.parentNode;
 		focusTag = selection.focusNode.parentNode;
-		selectedFullText = anchorTag.textContent;
-		console.log('selected conv = ' + selectedFullText);
+		startPoint = selection.getRangeAt(0).startOffset;
+		endPoint = selection.getRangeAt(0).endOffset;
+		if (anchorTag.parentNode.className.includes('selectedConv') 
+		   || focusTag.parentNode.className.includes('selectedConv')){
+			
+			selectedText = selection.toString();
+			
+		}
+		console.log('active Element = ' + document.activeElement);
+		console.log('selected conv = ' + anchorTag.textContent);
 		turn_id = anchorTag.parentElement.id;
 		chat_class = selection.focusNode.parentNode.parentElement.className;
 		console.log('chat_class = ' + chat_class);
@@ -71,8 +75,7 @@ $(document).ready(function() {
 
 		// Action when text is really selected
 
-		if (selectedText.length > 0) {
-			selectedElement = selection;
+		if (selectedText.length > 0 && selectedText !== '\n') {
 			// Highlight select with necessary logic
 			renderConv_info(turn_id);
 
@@ -86,7 +89,7 @@ $(document).ready(function() {
 				left: Math.min(mouseXPosition - 390, a - b),
 				top: Math.min(mouseYPosition, c / 2)
 			});
-
+			console.log('selected text = ' + selectedText);
 			$('#slot_selector').modal('show');
 			// Update info on info tag
 			$('#value').val(selectedText);
@@ -107,7 +110,6 @@ $(document).ready(function() {
 		endPoint = selection.getRangeAt(0).endOffset;
 		anchorTag = selection.anchorNode.parentNode;
 		focusTag = selection.focusNode.parentNode;
-		selectedFullText = anchorTag.textContent;
 		turn_id = anchorTag.parentElement.id;
 		chat_class = selection.focusNode.parentNode.parentElement.className;
 		// Action when text is really selected
@@ -133,7 +135,6 @@ $(document).ready(function() {
 
 			$('.messages').removeClass('selectedConv');
 			$(this).addClass('selectedConv');
-			selectedElement = selection;
 		}
 	});
 
@@ -144,7 +145,6 @@ $(document).ready(function() {
 		$('.messages').removeClass('selectedConv');
 		text = $(element, $('p')).text();
 
-		tmp = element;
 		console.log('sent text = ' + text);
 		console.log('sent lass name = ' + $(element, $('.messages'))[0].className);
 		console.log('sent message type = ' + $(element, $('.messages'))[0].className.includes('receive'));
@@ -156,6 +156,27 @@ $(document).ready(function() {
 		$(element).after(_html);
 		$(this).attr('disabled', true);
 	});
+
+	// Dynamically binding new button
+	$(document).on('click', '.add_dialog', function() {
+		element = $(this)[0].parentElement.parentElement.parentElement;
+		_turn_id = $(element).find('.messages')[0].id;
+		_turn_id = parseInt(_turn_id.split('_')[1]) + 1;
+		$('.messages').removeClass('selectedConv');
+		text = $(element, $('p')).text();
+
+		console.log('sent text = ' + text);
+		console.log('sent lass name = ' + $(element, $('.messages'))[0].className);
+		console.log('sent message type = ' + $(element, $('.messages'))[0].className.includes('receive'));
+		if ($(element, $('.messages'))[0].className.includes('receive')) {
+			_html = generateReceivedEditableBody(_turn_id, '');
+		} else {
+			_html = generateSentEditableBody(_turn_id, '');
+		}
+		$(element).after(_html);
+		$(this).attr('disabled', true);
+	});
+
 
 	$(document).on('click', '.add_editable_dialog', function() {
 		element = $(this)[0].parentElement.parentElement.parentElement;
@@ -183,36 +204,38 @@ $(document).ready(function() {
 		element.remove();
 	});
 
+	$(document).on('click', '.remove_dialog', function() {
+		element = $(this)[0].parentElement.parentElement.parentElement;
+		element.remove();
+	});
+
 	$(document).on('click', '.rm_editable_dialog', function() {
 		element = $(this)[0].parentElement.parentElement.parentElement;
 		element.remove();
 	});
 
+	$(document).on('click', '.refresh_dialog', function() {
+		
+		element = $(this)[0].parentElement;
+		tmp = element;
+		$(element).find('p').empty();
+		txt = original_dialogue[element.id];
+		$(element).find('p').append(txt);
+		//$(element).find('.messages')[0].textContent = txt;
+	});
+
 	$('#delete_selection').click(function() {
+		// We have to keep tagging info
+		// Just removing text with splice destroys tagging info
+
 		if (selection.toString() != '') {
 			selectedText = window.getSelection().toString();
-			var origin_text = $('.selectedConv').text().split('');
-			pointStart = selection.anchorOffset;
-			pointEnd = selection.focusOffset;
-
-			if (pointEnd < pointStart) {
-				pointStart = pointEnd;
-			}
-			origin_text.splice(pointStart, selectedText.length);
-			console.log('origin_text = ' + origin_text);
-			var modified_text = origin_text.join('');
-			console.log('modified_text = ' + modified_text);
-			selectedFullText = modified_text;
-		} else {
-			selectedText = $('.selectedConv').text();
-			var modified_text = '';
+			var original_html = $('.selectedConv').html();
+			var modified_html = original_html.replace(selectedText, '');
+			$('.selectedConv').empty();
+			$('.selectedConv').append(modified_html);
+			append_refresh_btn()
 		}
-		_html = '<p>' + modified_text + '</p>';
-		_html +=
-			'<button type="button" class="btn btn-default btn-sm add_editable_dialog"><span class="glyphicon glyphicon-plus add"</span></button>';
-		_html +=
-			'<button type="button" class="btn btn-default btn-sm rm_editable_dialog"><span class="glyphicon glyphicon-remove remove"></span></button>';
-		$('.selectedConv').html(_html);
 	});
 
 	$('#slot_selector_in_modal').on('change', function(e) {
@@ -220,10 +243,32 @@ $(document).ready(function() {
 		// render tagger_info panel
 		slot_color = $(this).val();
 		slot_text = $('#slot_selector_in_modal option:selected').text();
-		change_slot(turn_id, tag_id, slot_text);
-		$('#slots_input').append(
-			'<span class="badge badge-secondary ' + turn_id + '_in_modal>' + slot_text + '</span>'
-		);
+		if (selectedText.length > 0){
+			change_slot(turn_id, tag_id, slot_text);
+			$('#slots_input').append(
+				'<span class="badge badge-secondary ' + turn_id + '_in_modal>' + slot_text + '</span>'
+			);
+			append_refresh_btn();
+		}
+	});
+
+
+	$(".modal-header").on("mousedown", function(mousedownEvt) {
+		var $draggable = $(this);
+		var x = mousedownEvt.pageX - $draggable.offset().left,
+			y = mousedownEvt.pageY - $draggable.offset().top;
+		$("body").on("mousemove.draggable", function(mousemoveEvt) {
+			$draggable.closest(".modal-dialog").offset({
+				"left": mousemoveEvt.pageX - x,
+				"top": mousemoveEvt.pageY - y
+			});
+		});
+		$("body").one("mouseup", function() {
+			$("body").off("mousemove.draggable");
+		});
+		$draggable.closest(".modal").one("bs.modal.hide", function() {
+			$("body").off("mousemove.draggable");
+		});
 	});
 
 	// Binding event on dynamically generated editable dialogue
@@ -231,7 +276,6 @@ $(document).ready(function() {
 		element = $(this)[0].parentElement;
 		input = $(element).find('.edited_input')[0];
 		text = input.value;
-		tmp = element;
 		original_dialogue[element.id] = text;
 		input.remove();
 		_html = '<p>' + text + '</p>';
@@ -265,7 +309,6 @@ $(document).ready(function() {
 		child.className = 'row';
 		child.innerHTML = _html;
 		child.style.cssText = '{background:red;}';
-		tmp = $(this);
 		$(this)[0].parentElement.parentElement.appendChild(child);
 	});
 
@@ -327,13 +370,9 @@ $(document).ready(function() {
 		});
 
 		$('#intent_selector').modal('show');
-		e.target.setAttribute('data-editing', 'true');
 		console.log('e target = ' + e.target);
-		tmp = e.target;
-		slot = $('#slot_selector_in_modal').find(':selected').text();
-		console.log('selected target type = ' + tmp.tagName);
 		$('.messages').removeClass('selectedConv');
-		$(tmp).addClass('selectedConv');
+		$(e.target).addClass('selectedConv');
 	});
 
 	$(document).on('long-press', '.editable_messages', function(e) {
@@ -352,14 +391,9 @@ $(document).ready(function() {
 		});
 
 		$('#intent_selector').modal('show');
-		e.target.setAttribute('data-editing', 'true');
-		console.log('e target = ' + e.target);
-		tmp = e.target;
-		slot = $('#slot_selector_in_modal').find(':selected').text();
 		$(this).val('default');
-		console.log('selected target type = ' + tmp.tagName);
 		$('.messages').removeClass('selectedConv');
-		$(tmp).addClass('selectedConv');
+		$(e.target).addClass('selectedConv');
 	});
 
 	$('#act_selector_in_modal').on('change', function(e) {
@@ -378,6 +412,16 @@ $(document).ready(function() {
 		$(this).val('default');
 	});
 });
+
+function append_refresh_btn(){
+	// Check if refresh button exists and add if not.
+	if ($('.selectedConv').html().includes('refresh')){
+	}else{
+		_html =
+	'<button type="button" class="btn btn-default btn-sm refresh_dialog"><span class="glyphicon glyphicon-refresh refresh"></span></button>';
+		$('.selectedConv').append(_html)
+	}
+}
 
 function change_act(act) {
 	console.log('triggered change_act');
@@ -409,10 +453,10 @@ function change_slot(turn_id, tag_id, slot_text) {
 }
 
 function work_on_selection(e, selection, selectedText, startPoint, endPoint, anchorTag, focusTag, turn_id, tag_id) {
-	// if (e2.pageX - mouseXPosition < 0) {
-	// 	focusTag = selection.anchorNode.parentNode;
-	// 	anchorTag = selection.focusNode.parentNode;
-	// }
+	if (e.pageX - mouseXPosition < 0) {
+	 	focusTag = selection.anchorNode.parentNode;
+	 	anchorTag = selection.focusNode.parentNode;
+	}
 	console.log('tag id = ' + tag_id);
 	console.log('Selected text = ' + selectedText);
 
@@ -480,13 +524,38 @@ function work_on_selection(e, selection, selectedText, startPoint, endPoint, anc
 			$(this).remove();
 		}
 	});
-
 	selection.removeAllRanges();
+}
+
+
+function highlightSelection() {
+	var selection;
+
+	//Get the selected stuff
+	if (window.getSelection)
+		selection = window.getSelection();
+	else if (typeof document.selection != "undefined")
+		selection = document.selection;
+
+	//Get a the selected content, in a range object
+	var range = selection.getRangeAt(0);
+
+	//If the range spans some text, and inside a tag, set its css class.
+	if (range && !selection.isCollapsed) {
+		if (selection.anchorNode.parentNode == selection.focusNode.parentNode) {
+			var span = document.createElement('span');
+			span.className = 'highlight';
+			span.textContent = selection.toString();
+			selection.deleteFromDocument();
+			range.insertNode(span);
+//                        range.surroundContents(span);
+		}
+	}
 }
 
 function turn_into_slot() {
 	// assign selected element, which is global variable to local variable selection
-	var selection = selectedElement;
+	var selection = window.getSelection();
 	console.log('selection = ' + selection.toString());
 	console.log('turn_id = ' + turn_id);
 	console.log('tag_id = ' + tag_id);
@@ -504,14 +573,14 @@ function turn_into_slot() {
 		console.log(
 			'New Entity Info : Selected text = ' + selectedText + 'starting = ' + start_point + ' ending = ' + end_point
 		);
-		slot_info.push({
-			turn_id: turn_id,
-			tag_id: tag_id,
-			slot: slot,
-			value: selectedText,
-			start_point: start_point,
-			end_point: end_point
-		});
+		// slot_info.push({
+		// 	turn_id: turn_id,
+		// 	tag_id: tag_id,
+		// 	slot: slot,
+		// 	value: selectedText,
+		// 	start_point: start_point,
+		// 	end_point: end_point
+		// });
 		log_selection_info(mouseXPosition, mouseYPosition, selection);
 		//If the range spans some text, and inside a tag, set its css class.
 		if (range && !selection.isCollapsed) {
@@ -520,7 +589,7 @@ function turn_into_slot() {
 				var span_entity_tag = document.createElement('span');
 				span_entity_tag.className = 'highlight entity ' + turn_id + '_seq_' + tag_id;
 				span_entity_tag.id = slot;
-				span_entity_tag.textContent = slot + ': ';
+				span_entity_tag.textContent = ' ' + slot + ': ';
 
 				// Generate span tag with entity value class
 				var span_entity_value = document.createElement('span');
@@ -536,7 +605,7 @@ function turn_into_slot() {
 					' end_' +
 					end_point;
 				span_entity_value.id = slot;
-				span_entity_value.textContent = selection.toString();
+				span_entity_value.textContent = ' ' + selection.toString() + ' ';
 
 				// Remove text and insert generated tag
 				selection.deleteFromDocument();
