@@ -199,7 +199,9 @@ $(document).ready(function() {
 				pointStart = pointEnd;
 			}
 			origin_text.splice(pointStart, selectedText.length);
+			console.log('origin_text = ' + origin_text);
 			var modified_text = origin_text.join('');
+			console.log('modified_text = ' + modified_text);
 			selectedFullText = modified_text;
 		} else {
 			selectedText = $('.selectedConv').text();
@@ -354,6 +356,7 @@ $(document).ready(function() {
 		console.log('e target = ' + e.target);
 		tmp = e.target;
 		slot = $('#slot_selector_in_modal').find(':selected').text();
+		$(this).val('default');
 		console.log('selected target type = ' + tmp.tagName);
 		$('.messages').removeClass('selectedConv');
 		$(tmp).addClass('selectedConv');
@@ -364,6 +367,7 @@ $(document).ready(function() {
 		act = $('#act_selector_in_modal option:selected').text();
 		console.log('act selection = ' + act);
 		change_act(act);
+		$(this).val('default');
 	});
 
 	$('#intent_selector_in_modal').on('change', function(e) {
@@ -371,6 +375,7 @@ $(document).ready(function() {
 		intent = $('#intent_selector_in_modal option:selected').text();
 		console.log('intent selection = ' + intent);
 		change_intent(intent);
+		$(this).val('default');
 	});
 });
 
@@ -697,6 +702,7 @@ function set_menus(act, intent, slot) {
 		var element = $('<option>' + act[x] + '</option>');
 		elements.push(element);
 	}
+	elements.push('<option selected value = "default"> --- </option>');
 	$('#act_selector_in_modal').append(elements);
 
 	// Set menu for slot
@@ -705,6 +711,7 @@ function set_menus(act, intent, slot) {
 		value = Object.keys(slot[key])[0];
 		elements.push($('<option value = "' + slot[key][value] + '">' + value + '</option>'));
 	});
+	elements.push('<option selected value = "default"> --- </option>');
 	$('#slot_selector_in_modal').append(elements);
 
 	// Set menu for sentence intent
@@ -713,6 +720,7 @@ function set_menus(act, intent, slot) {
 		var element = $('<option>' + intent[x] + '</option>');
 		elements.push(element);
 	}
+	elements.push('<option selected value = "default"> --- </option>');
 	$('#intent_selector_in_modal').append(elements);
 }
 

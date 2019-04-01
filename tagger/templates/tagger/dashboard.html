@@ -20,9 +20,9 @@
         // Actual data from rest api
         $('#conv_table').DataTable( {
             "ajax": {
-                'url': 'http://172.23.148.117:8000/api/dialog/',
+                'url': 'http://172.23.148.117:9200/twd_index/_search',
                 "dataSrc": function(json){
-                    
+                    console.log(json);
                     let conv_list = [];
                     console.log('count = ' + json['count'])
                     data = json['results'];

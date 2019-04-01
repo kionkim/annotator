@@ -108,14 +108,44 @@ def show_conv_tagger(request):
         # selected_conv = [x for x in conv_json if x['name'] == post_id][0]
         pass
 
-    act = ['inform', 'ack', 'introduce', 'notify_success', \
-           'request', 'confirm', 'affirm', 'thank', 'bye', 'offer' ]
-    intent = ['선물', '리필']
-    slot = [{'service_type': '(178, 212, 245)'}, {'coupon': '(252, 195, 167)'}, \
-            {'data': '(143, 208, 187)'}, {'calling': '(211, 189, 235)'}, \
-            {'date': '(154, 159, 249)'}, {'subscription': '(252, 202, 202)'}]
+    act = ['ack', 'affirm', 'bye', 'hello', 'faq_question', 'faq_answer', 'negate', 'thank', 'confirm', 'inform**'
+         , 'deny', 'offer', 'reqmore', 'request', 'request_alt', 'select', 'notify_success', 'notify_failure', 'silence'
+         , 'introduce']
 
-    #Need to turn conv in json format
+    intent = ['선물', '리필']
+    slot = [
+                {'service_type': '(178, 212, 245)'},
+                {'intent': '(178, 212, 245)'},
+                {'subscription': '(178, 212, 245)'},
+                {'price_day': '(178, 212, 245)'},
+                {'price_total': '(178, 212, 245)'},
+                {'data': '(178, 212, 245)'},
+                {'name': '(178, 212, 245)'},
+                {'query': '(178, 212, 245)'},
+                {'qid': '(178, 212, 245)'},
+                {'desc': '(178, 212, 245)'},
+                {'message': '(178, 212, 245)'},
+                {'calling': '(178, 212, 245)'},
+                {'datato': '(178, 212, 245)'},
+                {'datefrom': '(178, 212, 245)'},
+                {'period': '(178, 212, 245)'},
+                {'country': '(178, 212, 245)'},
+                {'timebase': '(178, 212, 245)'},
+                {'': '(178, 212, 245)'},
+                {'timefrom': '(178, 212, 245)'},
+                {'timeto': '(178, 212, 245)'},
+                {'coupon': '(178, 212, 245)'},
+                {'count': '(178, 212, 245)'},
+                {'data_add': '(178, 212, 245)'},
+                {'month': '(178, 212, 245)'},
+                {'card': '(178, 212, 245)'},
+                {'card_name': '(178, 212, 245)'},
+                {'info': '(178, 212, 245)'},
+                {'service_add': '(178, 212, 245)'},
+                {'point': '(178, 212, 245)'},
+                {'price_use': '(178, 212, 245)'},
+                {'term': '(178, 212, 245)'},
+    ]
     return render(request, 'tagger/conv_tagger.html', \
                   {'conv': conv, 'act': act, 'slot': slot, 'intent': intent})
 
