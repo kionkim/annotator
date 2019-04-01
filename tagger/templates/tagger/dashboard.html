@@ -7,6 +7,7 @@
 
 {% block body_block %}
 <script>
+    var data;
     $(document).ready(function(){
         // Develop mode
         // var conv = getIntitalData();
@@ -23,35 +24,46 @@
                 "dataSrc": function(json){
                     
                     let conv_list = [];
+                    console.log('count = ' + json['count'])
                     data = json['results'];
                     for (c in data){
                         console.log('json 1 = ' + c);
-                        conv_list.push({'name': data[c]['name'], 'sentence': data[c]['sentences'][1]['text']});
-                        console.log({'name': data[c]['name'], 'sentence': data[c]['sentences'][1]['text']});
+                        conv_list.push({'id': data[c]['id'], 'name': data[c]['name'], 'sentence': data[c]['sentences'][1]['text']});
+                        console.log({'id': data[c]['id'], 'name': data[c]['name'], 'sentence': data[c]['sentences'][1]['text']});
                     }
                     return conv_list;
                 }
             },
             "columns": [
+                { "data": "id" },
                 { "data": "name" },
                 { "data": "sentence" },
             ]
         });
 
         $("#conv_table").delegate("tr[role='row']", "click", function(){
-            selected_conv = $(this).closest('tr').find('.sorting_1').text()
-            console.log('selected conv = ' + selected_conv)
-            
+            // Get ID for selected conversation
+            selected_conv_id = $(this).closest('tr').find('.sorting_1').text();
+            selected_conv = {};
+            console.log('selected conv id = ' + selected_conv_id);
+            $.each(data, function(value){
+                if (data[value]['id'].toString() === selected_conv_id){
+                    selected_conv = data[value];
+                }
+            });
+
+            console.log('selected conv = ' + JSON.stringify(selected_conv));
+
             $.ajax({
-                type: 'POST',
+                type: 'GET',
                 url: "{% url 'tagger:conv_tagger' %}",
                 data: {
-                    'post_id': selected_conv,
+                    'conv': JSON.stringify(selected_conv),
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
                 },
                 success: function(data){
                     console.log('success');
-                    window.location = '/tagger/conv_tag'+'?post_id=' + selected_conv;
+                    window.location = '/tagger/conv_tagger'+'?conv=' + JSON.stringify(selected_conv);
                 },
             })
         });
@@ -70,6 +82,7 @@
     <table id="conv_table" class="table table-striped table-bordered" style="width:100%">
         <thead>
             <tr>
+                <th>ID</th>
                 <th>Name</th>
                 <th>Sentence</th>
             </tr>

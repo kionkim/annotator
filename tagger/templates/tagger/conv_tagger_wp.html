@@ -1,0 +1,54 @@
+{% extends "tagger/base.html" %}
+
+<!-- Bootpag -->
+
+{% block script %}
+<script type="text/javascript" src="../../static/js/base/jquery.bootpag.min.js"></script>
+<link rel="stylesheet" href="../../static/css/base/bootstrap.min.css">
+{% endblock %}
+
+{% block body_block %}
+<div id="content">Dynamic Content goes here</div>
+<div id="page-selection"></div>
+
+<script>
+    // init bootpag
+    $('#page-selection').bootpag({
+       total: 23,
+        page: 3,
+        maxVisible: 10
+    }).on('page', function(event, num){
+        $(".content2").html("Page " + num); // or some ajax content loading...
+    });
+    $(document).ready(function(){
+        // $.ajax({
+        //     type: 'GET',
+        //     url: 'http://172.23.148.117:8000/api/dialog/',
+        //     dataType: "json",
+        //     data: {
+        //         Country: "Japan"
+        //     },
+        //     success: function(data) {
+        //         console.log(data);
+        //         var city = ('#city');
+        //         $(city).empty();
+        //         for (var i = 0; i < data.length; i++) {
+        //             $(city).append('<option id=' + data[i].sysid + ' value=' + data[i].city_name + '>' + data[i].city_name + '</option>');
+
+        //         }
+        //     }
+
+        // });
+        var conv = getIntitalData();
+        console.log(conv);
+    });
+
+    function getIntitalData(){
+        var value= $.ajax({ 
+            url: '../../static/data/conv_1.json', 
+            async: false
+        }).responseText;
+        return JSON.parse(value);
+    }
+</script>
+{% endblock %}

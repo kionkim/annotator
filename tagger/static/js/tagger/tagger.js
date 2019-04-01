@@ -14,21 +14,22 @@ $(document).ready(function() {
 	var focusTag;
 	var aaa;
 
-	// conv = conv
-	// 	.replace(/&gt;/g, '>')
-	// 	.replace(/&lt;/g, '<')
-	// 	.replace(/&#39;/g, '"')
-	// 	.replace(/None/g, 'null')
-	// 	.replace(/&quot;/g, '~')
-	// 	.replace(/\//g, ' ')
-	// 	.replace(/<\/?[^>]+(>|$)/g, '');
+	//conv = conv.replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/&#39;/g, ' ').replace(/&quot;/g, '"');
+	//.replace(/\//g, ' ')
+	//.replace(/<\/?[^>]+(>|$)/g, '');
 	// console.log('conv = ' + conv);
+	//conv = JSON.parse(conv);
+
 	conv = getInitialData();
-	//console.log(conv.length);
+	console.log('conv = ' + conv);
 	conv = conv[3];
+	console.log('conv 225 = ' + conv[225]);
+
 	act = JSON.parse(act.replace(/&#39;/g, '"'));
 	intent = JSON.parse(intent.replace(/&#39;/g, '"'));
 	slot = JSON.parse(slot.replace(/&#39;/g, '"'));
+
+	console.log('conv = ' + conv);
 
 	// Set menu
 	set_menus(act, intent, slot);
@@ -102,7 +103,6 @@ $(document).ready(function() {
 		var highlighted = false;
 		selection = window.getSelection();
 		selectedText = selection.toString();
-
 		startPoint = selection.getRangeAt(0).startOffset;
 		endPoint = selection.getRangeAt(0).endOffset;
 		anchorTag = selection.anchorNode.parentNode;
