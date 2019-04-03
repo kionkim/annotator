@@ -17,19 +17,27 @@
         //     conv_list.push({'name': conv[c]['name'], 'sentence': conv[c]['sentences'][1]['text']});
         //     console.log({'name': conv[c]['name'], 'sentence': conv[c]['sentences'][1]['text']});
         // }
-        // Actual data from rest api
+
         $('#conv_table').DataTable( {
+            
             "ajax": {
-                'url': 'http://172.23.148.117:9200/twd_index/_search',
+                'url': 'http://172.23.148.117:9200/twd_index/_search?from=0&size=10',
+                "cache": true,
                 "dataSrc": function(json){
                     console.log(json);
                     let conv_list = [];
-                    console.log('count = ' + json['count'])
-                    data = json['results'];
+                    console.log('count = ' + json['hits']['hits']);
+                    data = json['hits']['hits'];
                     for (c in data){
-                        console.log('json 1 = ' + c);
-                        conv_list.push({'id': data[c]['id'], 'name': data[c]['name'], 'sentence': data[c]['sentences'][1]['text']});
-                        console.log({'id': data[c]['id'], 'name': data[c]['name'], 'sentence': data[c]['sentences'][1]['text']});
+                        console.log('c = ' + c );
+                        console.log('json 1 = ' + data[c]['_id']);
+                        conv_list.push({'id': data[c]['_id'], 
+                                        'name': data[c]['_source']['name'], 
+                                        'sentence': data[c]['_source']['sentences'][0]['text']});
+                        console.log({'id': data[c]['_id'], 
+                                        'name': data[c]['_source']['name'], 
+                                        'sentence': data[c]['_source']['sentences'][0]['text']
+                        });
                     }
                     return conv_list;
                 }
@@ -44,11 +52,19 @@
         $("#conv_table").delegate("tr[role='row']", "click", function(){
             // Get ID for selected conversation
             selected_conv_id = $(this).closest('tr').find('.sorting_1').text();
-            selected_conv = {};
+            selected_conv = [];
             console.log('selected conv id = ' + selected_conv_id);
             $.each(data, function(value){
-                if (data[value]['id'].toString() === selected_conv_id){
-                    selected_conv = data[value];
+                if (data[value]['_id'] === selected_conv_id){
+                    _selected_conv = data[value]['_source']['sentences'];
+                    $.each(_selected_conv, function(value){
+                        console.log(_selected_conv[value]['speaker']);
+                        if(_selected_conv[value]['speaker'] !== 'System'){
+                            console.log(_selected_conv[value]['created_date'].replace(/:/g,'-'));
+                            _selected_conv[value]['created_date'] = _selected_conv[value]['created_date'].replace(/:/g,'-');
+                            selected_conv.push(_selected_conv[value]);
+                        }
+                    });
                 }
             });
 
@@ -65,7 +81,7 @@
                     console.log('success');
                     window.location = '/tagger/conv_tagger'+'?conv=' + JSON.stringify(selected_conv);
                 },
-            })
+            });
         });
     });
 
@@ -84,7 +100,7 @@
             <tr>
                 <th>ID</th>
                 <th>Name</th>
-                <th>Sentence</th>
+                <th>First Sentence</th>
             </tr>
         </thead>
     </table>

@@ -1,6 +1,7 @@
 from django.urls import path
 from django.conf.urls import url
 from tagger import views
+from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns = [
     url(r'^conv_tagger/$', views.show_conv_tagger, name = 'conv_tagger'),

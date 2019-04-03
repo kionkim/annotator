@@ -13,22 +13,23 @@ $(document).ready(function() {
 	var focusTag;
 	var aaa;
 
-	//conv = conv.replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/&#39;/g, ' ').replace(/&quot;/g, '"');
-	//.replace(/\//g, ' ')
-	//.replace(/<\/?[^>]+(>|$)/g, '');
-	// console.log('conv = ' + conv);
-	//conv = JSON.parse(conv);
+	conv = conv
+		.replace(/&gt;/g, '>')
+		.replace(/&lt;/g, '<')
+		.replace(/&#39;/g, ' ')
+		.replace(/&quot;/g, '"')
+		.replace(/\//g, ' ')
+		.replace(/<\/?[^>]+(>|$)/g, '');
 
-	conv = getInitialData();
+	console.log('****** ' + conv);
+	console.log('****** adfdfa' + conv[338]);
+	conv = JSON.parse(conv);
+
 	console.log('conv = ' + conv);
-	conv = conv[3];
-	console.log('conv 225 = ' + conv[225]);
-
+	//conv = getInitialData();
 	act = JSON.parse(act.replace(/&#39;/g, '"'));
 	intent = JSON.parse(intent.replace(/&#39;/g, '"'));
 	slot = JSON.parse(slot.replace(/&#39;/g, '"'));
-
-	console.log('conv = ' + conv);
 
 	// Set menu
 	set_menus(act, intent, slot);
@@ -58,11 +59,11 @@ $(document).ready(function() {
 		focusTag = selection.focusNode.parentNode;
 		startPoint = selection.getRangeAt(0).startOffset;
 		endPoint = selection.getRangeAt(0).endOffset;
-		if (anchorTag.parentNode.className.includes('selectedConv') 
-		   || focusTag.parentNode.className.includes('selectedConv')){
-			
+		if (
+			anchorTag.parentNode.className.includes('selectedConv') ||
+			focusTag.parentNode.className.includes('selectedConv')
+		) {
 			selectedText = selection.toString();
-			
 		}
 		console.log('active Element = ' + document.activeElement);
 		console.log('selected conv = ' + anchorTag.textContent);
@@ -177,7 +178,6 @@ $(document).ready(function() {
 		$(this).attr('disabled', true);
 	});
 
-
 	$(document).on('click', '.add_editable_dialog', function() {
 		element = $(this)[0].parentElement.parentElement.parentElement;
 		_turn_id = $(element).find('.messages')[0].id;
@@ -215,7 +215,6 @@ $(document).ready(function() {
 	});
 
 	$(document).on('click', '.refresh_dialog', function() {
-		
 		element = $(this)[0].parentElement;
 		tmp = element;
 		$(element).find('p').empty();
@@ -234,7 +233,7 @@ $(document).ready(function() {
 			var modified_html = original_html.replace(selectedText, '');
 			$('.selectedConv').empty();
 			$('.selectedConv').append(modified_html);
-			append_refresh_btn()
+			append_refresh_btn();
 		}
 	});
 
@@ -243,7 +242,7 @@ $(document).ready(function() {
 		// render tagger_info panel
 		slot_color = $(this).val();
 		slot_text = $('#slot_selector_in_modal option:selected').text();
-		if (selectedText.length > 0){
+		if (selectedText.length > 0) {
 			change_slot(turn_id, tag_id, slot_text);
 			$('#slots_input').append(
 				'<span class="badge badge-secondary ' + turn_id + '_in_modal>' + slot_text + '</span>'
@@ -252,22 +251,21 @@ $(document).ready(function() {
 		}
 	});
 
-
-	$(".modal-header").on("mousedown", function(mousedownEvt) {
+	$('.modal-header').on('mousedown', function(mousedownEvt) {
 		var $draggable = $(this);
 		var x = mousedownEvt.pageX - $draggable.offset().left,
 			y = mousedownEvt.pageY - $draggable.offset().top;
-		$("body").on("mousemove.draggable", function(mousemoveEvt) {
-			$draggable.closest(".modal-dialog").offset({
-				"left": mousemoveEvt.pageX - x,
-				"top": mousemoveEvt.pageY - y
+		$('body').on('mousemove.draggable', function(mousemoveEvt) {
+			$draggable.closest('.modal-dialog').offset({
+				left: mousemoveEvt.pageX - x,
+				top: mousemoveEvt.pageY - y
 			});
 		});
-		$("body").one("mouseup", function() {
-			$("body").off("mousemove.draggable");
+		$('body').one('mouseup', function() {
+			$('body').off('mousemove.draggable');
 		});
-		$draggable.closest(".modal").one("bs.modal.hide", function() {
-			$("body").off("mousemove.draggable");
+		$draggable.closest('.modal').one('bs.modal.hide', function() {
+			$('body').off('mousemove.draggable');
 		});
 	});
 
@@ -413,13 +411,13 @@ $(document).ready(function() {
 	});
 });
 
-function append_refresh_btn(){
+function append_refresh_btn() {
 	// Check if refresh button exists and add if not.
-	if ($('.selectedConv').html().includes('refresh')){
-	}else{
+	if ($('.selectedConv').html().includes('refresh')) {
+	} else {
 		_html =
-	'<button type="button" class="btn btn-default btn-sm refresh_dialog"><span class="glyphicon glyphicon-refresh refresh"></span></button>';
-		$('.selectedConv').append(_html)
+			'<button type="button" class="btn btn-default btn-sm refresh_dialog"><span class="glyphicon glyphicon-refresh refresh"></span></button>';
+		$('.selectedConv').append(_html);
 	}
 }
 
@@ -454,8 +452,8 @@ function change_slot(turn_id, tag_id, slot_text) {
 
 function work_on_selection(e, selection, selectedText, startPoint, endPoint, anchorTag, focusTag, turn_id, tag_id) {
 	if (e.pageX - mouseXPosition < 0) {
-	 	focusTag = selection.anchorNode.parentNode;
-	 	anchorTag = selection.focusNode.parentNode;
+		focusTag = selection.anchorNode.parentNode;
+		anchorTag = selection.focusNode.parentNode;
 	}
 	console.log('tag id = ' + tag_id);
 	console.log('Selected text = ' + selectedText);
@@ -527,15 +525,12 @@ function work_on_selection(e, selection, selectedText, startPoint, endPoint, anc
 	selection.removeAllRanges();
 }
 
-
 function highlightSelection() {
 	var selection;
 
 	//Get the selected stuff
-	if (window.getSelection)
-		selection = window.getSelection();
-	else if (typeof document.selection != "undefined")
-		selection = document.selection;
+	if (window.getSelection) selection = window.getSelection();
+	else if (typeof document.selection != 'undefined') selection = document.selection;
 
 	//Get a the selected content, in a range object
 	var range = selection.getRangeAt(0);
@@ -548,7 +543,7 @@ function highlightSelection() {
 			span.textContent = selection.toString();
 			selection.deleteFromDocument();
 			range.insertNode(span);
-//                        range.surroundContents(span);
+			//                        range.surroundContents(span);
 		}
 	}
 }

@@ -14,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django import forms
 from tagger.models import UserProfileInfo
 from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
 
 import json
 
@@ -60,6 +61,7 @@ def register(request):
                            'registered':registered})
 
 @login_required
+@csrf_exempt
 def show_dashboard(request):
     with open('tagger/static/data/conv.json', 'r') as f:
         conv =  f.read()
@@ -101,7 +103,8 @@ def show_conv_tagger(request):
         conv = request.POST['conv']
         
     elif request.method == 'GET':
-        #conv = request.GET['conv']
+        conv = request.GET['conv']
+        print('23423423233  {}'.format(conv))
         #cleanr = re.compile('<.*?>')
         #conv = re.sub(cleanr, '', conv)
         # print(conv_json[0]['name'])
