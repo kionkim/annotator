@@ -21,7 +21,8 @@
         $('#conv_table').DataTable( {
             
             "ajax": {
-                'url': 'http://172.23.148.117:9200/twd_index/_search?from=0&size=10',
+                //'url': 'http://172.23.148.117:9200/twd_index/_search?from=0&size=10',
+                'url': '../../static/data/conv.json',
                 "cache": true,
                 "dataSrc": function(json){
                     console.log(json);
@@ -29,8 +30,6 @@
                     console.log('count = ' + json['hits']['hits']);
                     data = json['hits']['hits'];
                     for (c in data){
-                        console.log('c = ' + c );
-                        console.log('json 1 = ' + data[c]['_id']);
                         conv_list.push({'id': data[c]['_id'], 
                                         'name': data[c]['_source']['name'], 
                                         'sentence': data[c]['_source']['sentences'][0]['text']});
@@ -52,13 +51,19 @@
         $("#conv_table").delegate("tr[role='row']", "click", function(){
             // Get ID for selected conversation
             selected_conv_id = $(this).closest('tr').find('.sorting_1').text();
+            
+            selected_conv_with_id = {};
+            
+            
             selected_conv = [];
-            console.log('selected conv id = ' + selected_conv_id);
             $.each(data, function(value){
+                
                 if (data[value]['_id'] === selected_conv_id){
+                    selected_conv_with_id['id'] = data[value]['_source']['name'];
                     _selected_conv = data[value]['_source']['sentences'];
                     $.each(_selected_conv, function(value){
                         console.log(_selected_conv[value]['speaker']);
+                        _selected_conv[value]['text'] = _selected_conv[value]['text'].replace(/\n/g, '').replace(/"/g, '\'');
                         if(_selected_conv[value]['speaker'] !== 'System'){
                             console.log(_selected_conv[value]['created_date'].replace(/:/g,'-'));
                             _selected_conv[value]['created_date'] = _selected_conv[value]['created_date'].replace(/:/g,'-');
@@ -67,8 +72,8 @@
                     });
                 }
             });
-
-            console.log('selected conv = ' + JSON.stringify(selected_conv));
+            selected_conv_with_id['sentences'] = selected_conv;
+            console.log('selected conv = ' + JSON.stringify(selected_conv_with_id));
 
             $.ajax({
                 type: 'GET',
@@ -79,7 +84,7 @@
                 },
                 success: function(data){
                     console.log('success');
-                    window.location = '/tagger/conv_tagger'+'?conv=' + JSON.stringify(selected_conv);
+                    window.location = '/tagger/conv_tagger'+'?conv=' + JSON.stringify(selected_conv_with_id);
                 },
             });
         });

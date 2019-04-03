@@ -5,14 +5,11 @@ var tmp; // For debugging
 var original_dialogue; // To reload data
 // var slot_info = [];
 $(document).ready(function() {
-	var start_pos;
-	var end_pos;
 	var startPoint;
 	var endPoint;
 	var anchorTag;
 	var focusTag;
-	var aaa;
-
+	//var id = get_id();
 	conv = conv
 		.replace(/&gt;/g, '>')
 		.replace(/&lt;/g, '<')
@@ -22,15 +19,20 @@ $(document).ready(function() {
 		.replace(/<\/?[^>]+(>|$)/g, '');
 
 	console.log('****** ' + conv);
-	console.log('****** adfdfa' + conv[338]);
 	conv = JSON.parse(conv);
 
 	console.log('conv = ' + conv);
+
 	//conv = getInitialData();
+	//console.log('data conv = ' + conv.toString());
+
 	act = JSON.parse(act.replace(/&#39;/g, '"'));
 	intent = JSON.parse(intent.replace(/&#39;/g, '"'));
 	slot = JSON.parse(slot.replace(/&#39;/g, '"'));
 
+	var id = conv['id'];
+	conv = conv['sentences'];
+	console.log('id adfadfsa = ' + id);
 	// Set menu
 	set_menus(act, intent, slot);
 
@@ -38,7 +40,7 @@ $(document).ready(function() {
 	set_css(slot);
 
 	// Set comm title
-	$('<span class="glyphicon glyphicon-comment"> ' + conv['name'] + '</span>').appendTo('.chat_head');
+	$('<span class="glyphicon glyphicon-comment"> ' + id + '</span>').appendTo('.chat_head');
 
 	// SET dialogue
 	original_dialogue = generateChatBody(conv, '.msg_container_base');
@@ -618,11 +620,11 @@ function turn_into_slot() {
 
 // Generate chat-body
 function generateChatBody(conv, container) {
-	var conv_length = conv['sentences'].length;
+	var conv_length = conv.length;
 	var original_text = {};
 	for (var i = 0; i < conv_length; i++) {
-		text = conv['sentences'][i]['text'];
-		speaker = conv['sentences'][i]['speaker'];
+		text = conv[i]['text'];
+		speaker = conv[i]['speaker'];
 		dialogue_key = 'turn_' + i * 10;
 		original_text[dialogue_key] = text.replace(/(<([^>]+)>)/gi, '');
 		if (speaker === 'Customer') {
@@ -741,11 +743,37 @@ function aggregateChat() {
 
 function getInitialData() {
 	var value = $.ajax({
-		url: '../../static/data/conv_1.json',
+		url: '../../static/data/single_conv.json',
 		async: false
 	}).responseText;
-	return JSON.parse(value);
+	
+	_res = JSON.parse(value);
+	
+	_res = _res['_source'];
+	id = _res['name'];
+	console.log(_res);
+	res = [];
+	$.each(_res['sentences'], function(d){
+		if (_res['sentences'][d]['speaker'] !== 'System'){
+			console.log('speaker = ' + _res['sentences'][d]['speaker']);
+			res.push(_res['sentences'][d]);
+		}
+	});
+
+	return res;
 }
+
+function get_id() {
+	var value = $.ajax({
+		url: '../../static/data/single_conv.json',
+		async: false
+	}).responseText;
+	_res = JSON.parse(value);
+	_res = _res['_source'];
+	id = _res['name'];
+	return id;
+}
+
 
 function renderConv_info(turn_id, intent, acts, slots) {
 	$('input[id="turn_id_input"]').val(turn_id);

@@ -12,43 +12,49 @@
 <div id="page-selection"></div>
 
 <script>
+    var conv = '';
+    var id_name = [];
     // init bootpag
     $('#page-selection').bootpag({
        total: 23,
         page: 3,
         maxVisible: 10
     }).on('page', function(event, num){
-        $(".content2").html("Page " + num); // or some ajax content loading...
+        console.log('num  = ' + num);
+        $.ajax({
+            url: '/tagger/conv_tagger_inner'+'?conv='
+        }).done(function(data) {
+            console.log('done.....');
+            $( "#content" ).html( data );
+        });
     });
+
     $(document).ready(function(){
-        // $.ajax({
-        //     type: 'GET',
-        //     url: 'http://172.23.148.117:8000/api/dialog/',
-        //     dataType: "json",
-        //     data: {
-        //         Country: "Japan"
-        //     },
-        //     success: function(data) {
-        //         console.log(data);
-        //         var city = ('#city');
-        //         $(city).empty();
-        //         for (var i = 0; i < data.length; i++) {
-        //             $(city).append('<option id=' + data[i].sysid + ' value=' + data[i].city_name + '>' + data[i].city_name + '</option>');
+        $.ajax({
+            type: 'GET',
+            //url: 'http://172.23.148.117:9200/twd_index/_search?from=0&size=10',
+            'url': '../../static/data/conv.json',
+            "cache": true,
+            "dataSrc": function(json){
+                return json;
+            },
+            "dataType": "json",
+            success: function(data) {
+                console.log('success');
+                conv = data;
+                tmp = {};
+                $.each(conv['hits']['hits'], function(c){
+                    tmp[c] = conv['hits']['hits'][c]['_source']['name'];
+                    console.log(tmp);
+                    
+                });
+                id_name= tmp;
+            }
+        });
 
-        //         }
-        //     }
-
-        // });
-        var conv = getIntitalData();
-        console.log(conv);
+        
+        
     });
 
-    function getIntitalData(){
-        var value= $.ajax({ 
-            url: '../../static/data/conv_1.json', 
-            async: false
-        }).responseText;
-        return JSON.parse(value);
-    }
 </script>
 {% endblock %}
