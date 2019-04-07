@@ -8,8 +8,31 @@
 {% endblock %}
 
 {% block body_block %}
-<div id="content" style="height:90%;">Dynamic Content goes here</div>
-<div id="page-selection"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <div id="content" style="height:90%;"></div>
+            <div id="page-selection" style="align-content: center"></div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading top-bar">
+                    <div class="col-md-8">
+                        <h3 class="panel-title"><span class="glyphicon glyphicon-book"></span>  Tagging info</h3>
+                    </div>
+                </div>
+                <div>
+                    <div class="jumbotron" style = 'height: 90%'>
+                        <h1>Scenario looks like this!!</h1>
+                        <p><script type='text/javascript' src='https://app.botsociety.io/embc/5c989c25339f19620cbbe776'></script><a class='botsocref' style='position:fixed;left:-30000px;' href='https://botsociety.io'>botsociety</a><a class='botsoc' rel='nofollow' href='https://app.botsociety.io/emb/5c98a40f339f190232bbecd6?p=6fec8e50d7d9483252e9cfe6c30087bc40d60583' target='medium'></a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script>
     var conv;
@@ -17,8 +40,8 @@
     $(document).ready(function(){
         $.ajax({
             type: 'GET',
-            url: 'http://172.23.148.117:9200/twd_index/_search?from=20&size=35',
-            //'url': '../../static/data/conv.json',
+            //url: 'http://172.23.148.117:9200/twd_index/_search?from=20&size=35',
+            'url': '../../static/data/conv.json',
             "cache": true,
             "dataSrc": function(json){
                 return json;
@@ -39,9 +62,10 @@
     $('#page-selection').bootpag({
         total: 10,
             page: 1,
-            maxVisible: 10
+            maxVisible: 5
         }).on('page', function(event, num){
-            conv_name = decide_id(num, id_name);
+
+            conv_name = decide_id(num - 1, id_name);
             conv_string = get_conv(conv_name, entire_conv);
             $.ajax({
                 url: '/tagger/conv_tagger_inner'+'?conv=' + JSON.stringify(conv_string)

@@ -12,7 +12,6 @@
   <title>DMIG Anonotation Framework</title>
 
 <!-- Bootstrap core CSS -->
-<link rel="stylesheet" type="text/css" href="../../../tagger/static/css/base/bootstrap.min.css'">
 <!-- Custom styles for this template -->
 <link rel="stylesheet" type="text/css" href="../../static/css/glyphicon.css">
 <link rel="stylesheet" href="../../static/css/tagger/tagger.css">
@@ -34,93 +33,39 @@
 </head>
 
 <body>
-        <div class="container-fluid">
+
 <!------ Include the above in your HEAD tag ---------->
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="chatbody">
-                <div class="panel panel-primary">
-                    <div class="panel-heading top-bar">
-                        <div class="row">
-                            <div class="col-md-10">
-                                <h3 class="panel-title chat_head"></h3>
-                            </div>
-                            <div class="col-md-2 col-sm-offset-8">
-                                <button type="submit" class="btn btn-warning" id = "submit">저장</button>
-                            </div>
-                        </div>
+    <div class="chatbody">
+        <div class="panel panel-primary">
+            <div class="panel-heading top-bar">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h3 class="panel-title chat_head"></h3>
                     </div>
-                    <div class="panel-body msg_container_base">
-                    </div>
-                    <div class="panel-footer">
+                    <div class="col-md-2 col-sm-offset-8">
+                        <button type="submit" class="btn btn-warning" id = "submit">저장</button>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="panel panel-primary">
-                <div class="panel-heading top-bar">
-                    <div class="col-md-8">
-                        <h3 class="panel-title"><span class="glyphicon glyphicon-book"></span>  Tagging info</h3>
-                    </div>
-                </div>
-                <div>
-                    <div class="jumbotron" style = 'height: 90%'>
-                        <h1>Annotation Guideline or some other contexts!!</h1>
-                        <a class='botsocref' style='position:fixed;left:-30000px;' href='https://botsociety.io'>botsociety</a>
-                        <a class='botsoc' rel='nofollow' href='https://app.botsociety.io/emb/5c98a40f339f190232bbecd6?p=6fec8e50d7d9483252e9cfe6c30087bc40d60583' target='medium'></a>   
-                  </div>
-                  <div>
-                    
-                  </div>
-                </div>
+            <div class="panel-body msg_container_base">
+            </div>
+            <div class="panel-footer">
             </div>
         </div>
     </div>
+
     <div class="modal" id = 'slot_selector'>
         <!--Creates the popup content-->
         <div class="modal-dialog">
             <div class="modal-content popup-content">
             <!-- Modal Header -->
-                <div class="modal-header">
-                    <h5 class="modal-title">Slot selector</h5>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
             <!-- Modal body -->
                 <div class="modal-body">
-                    <form>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <label for='delte'><p>If you want</p> </label>
-                            </div>
-                            <div class="col-md-7 form-group">
-                                <button type="button" class="btn btn-danger" id = "delete_selection" >Delete</button>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-3 form-group">
-                                <label for="slot">Slot</label>
-                            </div>
-                            <div class="col-md-4 form-group" >
-                                <select id="slot_selector_in_modal"></select>
-                            </div>
-                            <div class='col-md-3' id = 'add_slot'>
-                                <button type="button" class="btn btn-default btn-sm add_slot"><span class="glyphicon glyphicon-plus"></span></button>
-                            </div>
-                        </div>
-                        <div class='row'>
-                            <div class="col-md-3 form-group">
-                                <label for="value_in_modal">Value</label>
-                            </div>
-                            <div class="col-md-7 form-group">
-                                <input id='value'></input>
-                            </div>
-                        </div>
-                        
-                    </form>
+                    <div class="row">
+                            <button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-trash remove_selection"></span></button>
+                            <button type="button" class="btn btn-default btn-sm slot_tag"><span class="glyphicon glyphicon-tag tag_for"></span></button>
+                            <select id="slot_selector_in_modal"></select>
+                    </div>
                 </div>
             </div>
         </div>
