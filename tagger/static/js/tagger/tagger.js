@@ -7,11 +7,11 @@ var tag_id = 0;
 var turn_id;
 var tmp; // For debugging
 var original_dialogue; // To reload data
+
 // var slot_info = [];
 $(document).ready(function() {
 	var startPoint;
 	var endPoint;
-
 	
 	// Parse data passed from django
 	conv = conv
@@ -36,6 +36,8 @@ $(document).ready(function() {
 
 	var id = conv['id'];
 	conv = conv['sentences'];
+	
+	console.log('current user = ' + user);
 	// Set menu
 	set_menus(act, intent, slot);
 	// Set css

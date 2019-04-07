@@ -26,3 +26,12 @@ class Conv(models.Model):
     intent = models.CharField(max_length = 100, null = True)
     ner = models.CharField(max_length = 100, null = True)
     created_date = models.DateTimeField()
+
+
+class Intent(models.Model):
+    intent_id = models.CharField(max_length = 8)
+    intent = models.CharField(max_length = 20)
+
+class Act(models.Model):
+    act_id = models.CharField(max_length = 8)
+    act = models.CharField(max_length = 20)

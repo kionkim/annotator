@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import UserProfileInfo, User
+from .models import UserProfileInfo, User, Conv, Intent, Act
 # Register your models here.
-
-from .models import Conv
 
 admin.site.register(UserProfileInfo)
 admin.site.register(Conv)
+admin.site.register(Intent)
+admin.site.register(Act)
 

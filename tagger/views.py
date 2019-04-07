@@ -3,8 +3,6 @@ from tagger.forms import UserForm, UserProfileInfoForm
 # Create your views here.
 from django.utils import timezone
 from django.core import serializers
-from .models import Conv
-
 
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
@@ -12,7 +10,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 from django import forms
-from tagger.models import UserProfileInfo
+from .models import UserProfileInfo, Intent, Act, Conv
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 
@@ -90,8 +88,6 @@ def user_login(request):
             return HttpResponse("Invalid login details given")
     else:
         return render(request, 'tagger/login.html')
-
-
 
 @login_required
 def show_conv_tagger(request):
@@ -203,8 +199,20 @@ def show_conv_tagger_inner(request):
                 {'term': '(178, 212, 245)'},
     ]
     return render(request, 'tagger/conv_tagger_inner.html', \
-                  {'conv': conv, 'act': act, 'slot': slot, 'intent': intent})
+                  {'user': request.user, 'conv': conv, 'act': act, 'slot': slot, 'intent': intent})
 
+@login_required
+def get_intent(request):
+    object_list = Intent.objects.all() #or any kind of queryset
+    json = serializers.serialize('json', object_list)
+    return HttpResponse(json, content_type='application/json')
+
+@login_required
+def get_act(request):
+    object_list = Act.objects.all() #or any kind of queryset
+    json = serializers.serialize('json', object_list)
+    return HttpResponse(json, content_type='application/json')
+ 
 @login_required
 def show_conv_tagger_wp(request):
     #Need to turn conv in json format
