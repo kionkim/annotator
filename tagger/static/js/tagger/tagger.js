@@ -669,6 +669,7 @@ function generateReceivedBody(turn, text) {
 	body += '</div></div></div>';
 	return body;
 }
+
 function generateReceivedEditableBody(turn, text) {
 	body = '<div class="row msg_container base_receive">';
 	body += '<div class="col-md-2 avatar" ><img src="../../static/images/ryan.png" class=" img-responsive "></div>';
