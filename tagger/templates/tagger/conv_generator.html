@@ -1,34 +1,138 @@
 {% extends "tagger/base.html" %}
 
+<!-- Bootpag -->
+
 {% block script %}
-
+<link rel="stylesheet" href="../../static/css/base/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="../../static/css/glyphicon.css">
 <link rel="stylesheet" href="../../static/css/tagger/tagger.css">
-<script type="text/javascript" src="../../static/js/tagger/tagger.js"></script>  
-<!-- <script type="text/javascript" src="../../static/js/base/bootstrap.min.js"></script> -->
 
-<script type="text/javascript">
-    var conv = '{{ conv }}';
-    var act = '{{ act }}';
-    var intent = '{{ intent }}';
-    var slot = '{{ slot }}';
+<script type="text/javascript" src="../../static/js/base/jquery.min.js"></script>
+<script type="text/javascript" src="../../static/js/base/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="../../static/js/base/long-press.js"></script>
+<script type="text/javascript" src="../../static/js/base/popper.js"></script>
+<script type="text/javascript" src="../../static/js/base/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../static/js/base/jquery.min.js"></script>
+<!-- <script type="text/javascript" src="../../static/js/tagger/tagger.js"></script>   -->
+<script type="text/javascript" src="../../static/js/base/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+        $(".agent").click(function(){
+            console.log('agent clicked');
+            add_dialog($(this));
+        });
+
+        $(".customer").click(function(){
+            console.log('customer clicked');
+        });
+    });
+
+    function generateReceivedEditableBody(turn, text) {
+        body = '<div class="row msg_container base_receive">';
+        body += '<div class="col-md-2 avatar" ><img src="../../static/images/ryan.png" class=" img-responsive "></div>';
+        body +=
+            '<div class="col-md-10"><div class="messages editable_messages selectedConv msg_receive col-md-10" data-long-press-delay="200" id = "turn_' +
+            turn +
+            '">' +
+            '<input class = "form-control edited_input" type = "text" id = "edited_' +
+            turn +
+            '" value = "' +
+            text +
+            '"></input>';
+        body +=
+            '<button type="button" class="btn btn-default btn-sm confirm_generated_text"><span class="glyphicon glyphicon-ok ok"></span></button>';
+        body +=
+            '<button type="button" class="btn btn-default btn-sm add_editable_dialog"><span class="glyphicon glyphicon-plus add"></span></button>';
+        body +=
+            '<button type="button" class="btn btn-default btn-sm rm_editable_dialog"><span class="glyphicon glyphicon-remove"></span></button>';
+
+        body += '</div></div></div>';
+
+	return body;
+}
+
+function add_dialog(button) {
+	tmp = button;
+	console.log('add_dialog..... ' + $(button)[0].toString());
+	element = $(button)[0].parentElement.parentElement.parentElement;
+	console.log('add_dialog..... ' + element);
+	_turn_id = "0";
+	$('.messages').removeClass('selectedConv');
+	text = $(element, $('p')).text();
+	if ($(element, $('.messages'))[0].className.includes('receive')) {
+		_html = generateReceivedEditableBody(_turn_id, '');
+	} else {
+		_html = generateSentEditableBody(_turn_id, '');
+	}
+	$(element).after(_html);
+	console.log('before disable');
+	$(this).attr('disabled', true);
+}
+
+function generateSentEditableBody(turn, text) {
+	body = '<div class="row msg_container base_sent">';
+	body +=
+		'<div class="col-md-10"><div class="messages editable_messages selectedConv msg_sent data-long-press-delay="200" id = "turn_' +
+		turn +
+		'">' +
+		'<input class = "form-control  edited_input" type = "text" id = "edited_' +
+		turn +
+		'" + value = "' +
+		text +
+		'"></input>';
+	body +=
+		'<button type="button" class="btn btn-default btn-sm confirm_generated_text"><span class="glyphicon glyphicon-ok ok"></span></button>';
+	body +=
+		'<button type="button" class="btn btn-default btn-sm add_editible_dialog"><span class="glyphicon glyphicon-plus add"></span></button>';
+	body +=
+		'<button type="button" class="btn btn-default btn-sm rm_editible_dialog"><span class="glyphicon glyphicon-remove remove"></span></button>';
+	body += '</div></div>';
+	body += '<div class="col-md-2 avatar" ><img src="../../static/images/ryan.png" class=" img-responsive "></div>';
+
+	body += '</div>';
+
+	return body;
+}
+
 </script>
+
+<style>
+.btn-label {position: relative;left: 0px;display: inline-block;padding: 6px 12px;background: rgba(0,0,0,0.15);border-radius: 3px 0 0 3px;}
+.btn-labeled {padding-top: 0;padding-bottom: 0; width: 150px; background: #ccc}
+.btn { margin-bottom:10px; }
+
+#wrapper {
+  width: 100%;
+  height: 50px;
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>
 {% endblock %}
 
 {% block body_block %}
-<!------ Include the above in your HEAD tag ---------->
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-6">
             <div class="chatbody">
                 <div class="panel panel-primary">
                     <div class="panel-heading top-bar">
-                        <div class="col-md-8">
-                            <h3 class="panel-title chat_head"></h3>
-                        </div>
+                    </div>
+                    <div id = "wrapper">
+                        <button type="button" class="btn btn-labeled btn-default customer">
+                            <span>Customer</span>
+                        </button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button type="button" class="btn btn-labeled btn-default agent">
+                            <span>Agent</span>
+                        </button>
                     </div>
                     <div class="panel-body msg_container_base">
                     </div>
-                    <div class="panel-footer">
+                    <div class="panel-footer">                        
                     </div>
                 </div>
             </div>
@@ -38,74 +142,88 @@
             <div class="panel panel-primary">
                 <div class="panel-heading top-bar">
                     <div class="col-md-8">
-                        <h3 class="panel-title"><span class="glyphicon glyphicon-book"></span> Tagging info</h3>
+                        <h3 class="panel-title"><span class="glyphicon glyphicon-book"></span>  Tagging info</h3>
                     </div>
                 </div>
                 <div>
-                    <form class = 'tagger_form'>
-                        <div class="form-group">
-                            <label for="turn_id_input">Turn ID</label>
-                            <input class="form-control" id="turn_id_input"></input>
-                        </div>
-                        <div class="form-group"> 
-                            <label for="intent_input">문장 Intent</label>
-                            <select class="form-control" id="sentence_intent_input"></select>
-                        </div> 
-                        <div class="form-group">
-                            <label for="acts_input">Act</label>
-                            <select class="form-control" id="act_input"></select>
-                        </div>
-                        <div class="form-group">
-                            <label for="slots_input">Slots</label>
-                            <div class='col-md-6 slot_list' id = "slots_input"></div>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary">저장</button>
-                        </div>
-                        
-                    </form>
+                    <div class="jumbotron" style = 'height: 90%'>
+                        <h1>Scenario looks like this!!</h1>
+                        <p><script type='text/javascript' src='https://app.botsociety.io/embc/5c989c25339f19620cbbe776'></script><a class='botsocref' style='position:fixed;left:-30000px;' href='https://botsociety.io'>botsociety</a><a class='botsoc' rel='nofollow' href='https://app.botsociety.io/emb/5c98a40f339f190232bbecd6?p=6fec8e50d7d9483252e9cfe6c30087bc40d60583' target='medium'></a></p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal" id = 'slot_selector'>
-        <!--Creates the popup content-->
-        <div class="modal-dialog">
-            <div class="modal-content popup-content">
-            <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title">Select slot</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  </div>
-                  <!-- Modal body -->
-                  <div class="modal-body">
-                      <form>
-                          <div class="form-group">
-                            <button type="button" class="btn btn-danger" id = "delete_selection" >Delete</button>
-                          </div>
-                          <div class="form-group">
-                              <label for="slot">Slot</label>
-                          </div>
-                          <div class="form-group" >
-                              <select id="slot_in_modal"></select>
-                          </div>
-                          <div class="form-group">
-                              <label for="value_in_modal">Value</label>
-                          </div>
-                          <div class="form-group">
-                              <input id='value'></input>
-                          </div>
-                      </form>
-                  </div>
-            
-                  <!-- Modal footer -->
-                  <!-- <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                  </div>      -->
-                </div>
-              </div>
-    </div>
 </div>
 
 
+<script>
+    var conv;
+    var id_name = [];
+    $(document).ready(function(){
+        $.ajax({
+            type: 'GET',
+            //url: 'http://172.23.148.117:9200/twd_index/_search?from=20&size=35',
+            'url': '../../static/data/conv.json',
+            "cache": true,
+            "dataSrc": function(json){
+                return json;
+            },
+            "dataType": "json",
+            success: function(data) {
+                console.log('success');
+                tmp = {};
+                $.each(data['hits']['hits'], function(c){
+                    tmp[c] = data['hits']['hits'][c]['_source']['name'];                    
+                });
+                entire_conv = data;
+                id_name= tmp;
+            }
+        });
+
+    // init bootpag
+    $('#page-selection').bootpag({
+        total: 10,
+            page: 1,
+            maxVisible: 5
+        }).on('page', function(event, num){
+
+            conv_name = decide_id(num - 1, id_name);
+            conv_string = get_conv(conv_name, entire_conv);
+            $.ajax({
+                url: '/tagger/conv_tagger_inner'+'?conv=' + JSON.stringify(conv_string)
+            }).done(function(data) {
+                $( "#content" ).html( data );
+            });
+        });
+    });
+
+    function decide_id(id, id_name){
+        return id = id_name[id];
+    }
+
+    function get_conv(conv_name, _conv){
+        _data = _conv['hits']['hits'];
+        conv_with_id = {};
+        refined_conv = [];
+        
+        $.each(_data, function(value){
+            console.log('line 73 - ' + _data[value]['_source']['name']);
+            if (_data[value]['_source']['name'] === conv_name){
+                conv_with_id['id'] = _data[value]['_source']['name'];                
+                _conv = _data[value]['_source']['sentences'];
+                $.each(_conv, function(value){
+                    _conv[value]['text'] = _conv[value]['text'].replace(/\n/g, '').replace(/"/g, '\'');
+                    if(_conv[value]['speaker'] !== 'System'){
+                        _conv[value]['created_date'] = _conv[value]['created_date'].replace(/:/g,'-');
+                        refined_conv.push(_conv[value]);
+                    }
+                });
+            }
+        });
+        conv_with_id['sentences'] = refined_conv; 
+        return conv_with_id;
+    }
+
+</script>
 {% endblock %}
